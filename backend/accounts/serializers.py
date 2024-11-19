@@ -12,12 +12,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'password']
-        
+
     def validate(self, attrs):
         print("Attrs: ", attrs)
         print("User: ", User.__dict__.keys())
         email = attrs.get('email')
-        
+
         if User.objects.filter(email=email).exists():
             raise ValidationError({
                 'email': 'This email is already taken.'
