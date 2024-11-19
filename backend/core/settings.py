@@ -28,6 +28,9 @@ print('Debug is: ' + str(DEBUG))
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'accounts.AppUser'
+
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 0.0.0.0 127.0.0.1").split(" ")
 
 # Application definition
 
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     
     # Apps
     'jwt_auth.apps.JwtAuthConfig',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
