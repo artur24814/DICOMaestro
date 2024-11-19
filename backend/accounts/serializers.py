@@ -14,8 +14,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ['email', 'first_name', 'last_name', 'password']
 
     def validate(self, attrs):
-        print("Attrs: ", attrs)
-        print("User: ", User.__dict__.keys())
         email = attrs.get('email')
 
         if User.objects.filter(email=email).exists():

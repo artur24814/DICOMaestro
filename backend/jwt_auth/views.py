@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
@@ -26,9 +26,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
-        if (refresh_token := request.COOKIES.get('refresh_token')):
-            request.data['refresh'] = refresh_token
-
+        if (refresh_token := request.COOKIES.get('refresh_token') or request.data.get('refresh')):
             try:
                 refresh = RefreshToken(refresh_token)
                 access_token = refresh.access_token
@@ -36,7 +34,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                 return Response({
                     'access': str(access_token),
                 })
-            except InvalidToken:
+            except (InvalidToken, TokenError):
                 return Response(
                     {'error': 'Invalid or expired refresh token'},
                     status=status.HTTP_401_UNAUTHORIZED
