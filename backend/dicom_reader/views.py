@@ -1,3 +1,5 @@
+import pydicom
+from pydicom.errors import InvalidDicomError
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,9 +14,18 @@ class ReadDICOMFileAPIView(APIView):
         if not file:
             return Response({"error": "No file provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-        response_data = {
-            "filename": file.name,
-            "content_type": file.content_type,
-            "size": file.size,
+        try:
+            dicom_file = pydicom.dcmread(file, stop_before_pixels=True)
+        except (InvalidDicomError, Exception) as e:
+            print(e)
+            return Response({"error": "Invalid DICOM file"}, status=status.HTTP_400_BAD_REQUEST)
+
+        metadata = {
+            "PatientName": str(dicom_file.get("PatientName", "Unknown")),
+            "PatientID": str(dicom_file.get("PatientID", "Unknown")),
+            "StudyDate": str(dicom_file.get("StudyDate", "Unknown")),
+            "Modality": str(dicom_file.get("Modality", "Unknown")),
+            "Manufacturer": str(dicom_file.get("Manufacturer", "Unknown")),
         }
-        return Response(response_data, status=status.HTTP_200_OK)
+
+        return Response(metadata, status=status.HTTP_200_OK)
