@@ -16,6 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+from core.settings import DEBUG
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,3 +26,7 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/dicom/read/', include('dicom_reader.urls'))
 ]
+
+if DEBUG:
+    urlpatterns.append(path("__debug__/", include("debug_toolbar.urls")),)
+    urlpatterns += staticfiles_urlpatterns()

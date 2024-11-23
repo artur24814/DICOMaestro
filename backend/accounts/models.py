@@ -47,3 +47,8 @@ class AppUser(AbstractUser):
 
     def has_module_perms(self, app_label):
         return True
+
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = self.email.split('@')[0]
+        return super().save(*args, **kwargs)

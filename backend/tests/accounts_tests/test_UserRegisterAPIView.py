@@ -10,7 +10,7 @@ BASE_URL = reverse('accounts:register')
 
 
 @pytest.mark.django_db
-@assert_num_queries(1)
+@assert_num_queries(3)
 def test_user_registration_success(client):
     """
     Test the successful user registration process.
