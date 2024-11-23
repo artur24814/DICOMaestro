@@ -3,12 +3,14 @@ from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from tests.testing_data.accounts import BASE_USER_DATA
+from tests.decorators.num_queries import assert_num_queries
 
 User = get_user_model()
 BASE_URL = reverse('accounts:register')
 
 
 @pytest.mark.django_db
+@assert_num_queries(3)
 def test_user_registration_success(client):
     """
     Test the successful user registration process.
@@ -27,6 +29,7 @@ def test_user_registration_success(client):
 
 
 @pytest.mark.django_db
+@assert_num_queries(1)
 def test_user_registration_duplicate_email(client, base_app_user):
     """
     Test registration with a duplicate email, expecting a validation error.
@@ -39,6 +42,7 @@ def test_user_registration_duplicate_email(client, base_app_user):
 
 
 @pytest.mark.django_db
+@assert_num_queries(0)
 def test_user_registration_missing_fields(client):
     """
     Test registration when required fields are missing.
@@ -55,6 +59,7 @@ def test_user_registration_missing_fields(client):
 
 
 @pytest.mark.django_db
+@assert_num_queries(1)
 def test_user_registration_weak_password(client):
     """
     Test registration with a weak password (too short).

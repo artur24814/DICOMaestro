@@ -7,12 +7,14 @@ from rest_framework import status
 from rest_framework_simplejwt.settings import api_settings
 
 from tests.testing_data.accounts import BASE_USER_DATA
+from tests.decorators.num_queries import assert_num_queries
 
 User = get_user_model()
 BASE_URL = reverse('jwt_auth:token_obtain_pair')
 
 
 @pytest.mark.django_db
+@assert_num_queries(1)
 def test_custom_token_obtain_pair_view(client, base_app_user):
     """
     Test the custom token obtain view (JWT obtain access and refresh tokens).

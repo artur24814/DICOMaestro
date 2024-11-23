@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 
@@ -12,15 +11,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name', 'password']
-
-    def validate(self, attrs):
-        email = attrs.get('email')
-
-        if User.objects.filter(email=email).exists():
-            raise ValidationError({
-                'email': 'This email is already taken.'
-            })
-        return attrs
 
     def create(self, validated_data):
         user = User.objects.create_user(
