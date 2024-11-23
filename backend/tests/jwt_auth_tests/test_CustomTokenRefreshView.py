@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from tests.testing_data.accounts import BASE_USER_DATA
+from tests.decorators.num_queries import assert_num_queries
 
 User = get_user_model()
 BASE_LOGIN_URL = reverse('jwt_auth:token_obtain_pair')
@@ -12,6 +13,7 @@ BASE_TOKEN_REFRESH_URL = reverse('jwt_auth:token_refresh')
 
 
 @pytest.mark.django_db
+@assert_num_queries(1)
 def test_custom_token_refresh_view_valid_token(client, base_app_user):
     """
     Test the custom token refresh view with a valid refresh token.
@@ -34,6 +36,7 @@ def test_custom_token_refresh_view_valid_token(client, base_app_user):
 
 
 @pytest.mark.django_db
+@assert_num_queries(0)
 def test_custom_token_refresh_view_invalid_token(client):
     """
     Test the custom token refresh view with an invalid or expired refresh token.
@@ -46,6 +49,7 @@ def test_custom_token_refresh_view_invalid_token(client):
 
 
 @pytest.mark.django_db
+@assert_num_queries(0)
 def test_custom_token_refresh_view_missing_token(client):
     """
     Test the custom token refresh view when the refresh token is missing from cookies.
