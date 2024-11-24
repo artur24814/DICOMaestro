@@ -1,8 +1,17 @@
 import React from "react"
+import { Container } from 'react-bootstrap'
+import { FaGithub } from 'react-icons/fa'
 
 const FooterComponent = () => {
   return (
-    <h1>Footer</h1>
+    <footer className="bg-dark text-white py-3">
+      <Container className="d-flex justify-content-between">
+        <p className="mb-0">Open-source under MIT License. © 2024 DICOMaestro.</p>
+        <a href="https://github.com/your-repository" target="_blank" rel="noopener noreferrer" className="text-white">
+          <FaGithub size={24} /> GitHub
+        </a>
+      </Container>
+    </footer>
   )
 }
 

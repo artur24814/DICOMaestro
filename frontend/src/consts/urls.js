@@ -1,3 +1,3 @@
-export const LOGIN_URL = 'auth/login/'
-export const REGISTER_URL = 'auth/register/'
-export const REFRESH_TOKEN = 'auth/refresh/'
+export const LOGIN_PAGE_URL = '/login'
+export const REGISTER_PAGE_URL = '/register'
+export const HOME_PAGE_URL = '/'
