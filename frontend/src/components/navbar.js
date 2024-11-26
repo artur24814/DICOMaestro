@@ -5,9 +5,10 @@ import { Container, Navbar, Nav, NavDropdown, Button } from 'react-bootstrap'
 import '../styles/navbar.css'
 import api from '../api/axiosConfig.js'
 import { LOGIN_PAGE_URL, REGISTER_PAGE_URL, HOME_PAGE_URL } from '../consts/urls.js'
+import { useAuth } from '../contexts/AuthContext.js'
 
 const NavbarComponent = () => {
-  const isAuthenticated = false
+  const { isAuthenticated, user, logout } = useAuth()
   return (
     <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
       <Container>
@@ -22,16 +23,14 @@ const NavbarComponent = () => {
           </Nav>
           {isAuthenticated ? (
             <Nav>
-              <NavDropdown title={'user'} id="collapsible-nav-dropdown" className='mt-1'>
+              <NavDropdown title={user} id="collapsible-nav-dropdown" className='mt-1'>
                 <NavDropdown.Item href="#action/3.1" className="fw-bold">Action</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/' className="fw-bold">
                   Image processing
                 </NavDropdown.Item>
               </NavDropdown>
-              <Nav.Link as={Link} to={HOME_PAGE_URL}>
-                <Button variant="outline-light"  className="me-2">
-                  Logout
-                </Button>
+              <Nav.Link as={Link} to={HOME_PAGE_URL} onClick={logout} className="fw-bold">
+                logout
               </Nav.Link>
             </Nav>
           ) : (
