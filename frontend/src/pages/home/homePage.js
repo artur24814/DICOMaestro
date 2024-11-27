@@ -4,7 +4,6 @@ import FeaturesSection from './components/featuresSection'
 import SecuritySection from './components/securitySection'
 import DICOMInformationSection from './components/dicomInfoSection'
 import APISection from './components/apiSection'
-import withAuth from '../../utils/withAuth'
 
 const HomePage = () => {
   return (
@@ -18,4 +17,4 @@ const HomePage = () => {
   )
 }
 
-export default withAuth(HomePage)
+export default HomePage
