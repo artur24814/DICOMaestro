@@ -1,4 +1,5 @@
 import axios from "axios"
+import { ACCESS_TOKEN_NAME } from "./tokenConfig"
 
 const api = axios.create({
   baseURL:  process.env.REACT_APP_API_URL,
@@ -7,7 +8,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('token')
+    const accessToken = localStorage.getItem(ACCESS_TOKEN_NAME)
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`
     }

@@ -1,0 +1,13 @@
+.table-container {
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 15px;
+}
+.images-container {
+    max-height: 100vh;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 15px;
+}
