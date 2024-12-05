@@ -1,9 +1,9 @@
-name: Pygame test
+name: Pyton test
 
 on: [push]
 
 jobs:
-  tests:
+  test-backend:
     runs-on: ubuntu-latest
 
     defaults:

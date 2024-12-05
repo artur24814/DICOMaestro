@@ -1,0 +1,16 @@
+name: Workflow for JS/React and Python Tests
+
+on: [push]
+
+jobs:
+  trigger-js-react-tests:
+    name: Trigger JS/React Tests
+    uses: ./.github/workflows/js-react-test.yml
+    with:
+      ref: ${{ github.sha }}
+
+  trigger-python-tests:
+    name: Trigger Python Tests
+    uses: ./.github/workflows/python-test.yml
+    with:
+      ref: ${{ github.sha }}
