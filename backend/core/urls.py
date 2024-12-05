@@ -21,7 +21,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from core.settings import DEBUG
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('api/admin/', admin.site.urls),
     path('api/token/', include('jwt_auth.urls')),
     path('api/auth/', include('accounts.urls')),
     path('api/dicom/read/', include('dicom_reader.urls'))
