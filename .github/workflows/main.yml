@@ -95,7 +95,7 @@ jobs:
           docker push ${{ secrets.DOCKER_IMAGE_TAG }}:frontend
       - name: Build Nginix Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:nginix -f nginix/Dockerfile ./nginix 
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:nginx -f nginx/Dockerfile ./nginx  
       - name: Push Nginix Docker Image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_IMAGE_TAG }}:nginx
