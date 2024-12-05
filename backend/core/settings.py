@@ -26,8 +26,6 @@ SECRET_KEY = str(os.environ.get('SECRET_KEY'))
 DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 print('Debug is: ' + str(DEBUG))
 
-ALLOWED_HOSTS = []
-
 AUTH_USER_MODEL = 'accounts.AppUser'
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 0.0.0.0 127.0.0.1").split(" ")
@@ -48,6 +46,7 @@ INSTALLED_APPS = [
     # Apps
     'jwt_auth.apps.JwtAuthConfig',
     'accounts.apps.AccountsConfig',
+    'common.apps.CommonConfig',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +109,17 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+if not DEBUG:
+    DATABASES = {
+        'default': {
+            'HOST': os.environ.get('DB_HOST'),
+            'NAME': os.environ.get('DB_DB'),
+            # 'PORT': int(os.environ.get('DB_PORT')),
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+        },
+    }
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -163,7 +172,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'backend_static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_ROOT = 'media'
+
+MEDIA_URL = 'media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
