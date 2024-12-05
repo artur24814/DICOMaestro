@@ -60,3 +60,42 @@ jobs:
 
       - name: Run Standard.js Linter
         run: npx standard
+
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test-frontend, test-backend]
+    # if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+      - name: Login into Docker
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:backend -f backend/Dockerfile ./backend 
+      - name: Push Backend Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_IMAGE_TAG }}:backend
+      - name: Build Frontend Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:frontend -f frontend/Dockerfile ./frontend 
+      - name: Push Frontend Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_IMAGE_TAG }}:frontend
+      - name: Build Nginix Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:nginix -f nginix/Dockerfile ./nginix 
+      - name: Push Nginix Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_IMAGE_TAG }}:nginx
