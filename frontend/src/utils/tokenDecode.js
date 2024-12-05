@@ -1,4 +1,4 @@
-import { jwtDecode } from "jwt-decode"
+import { jwtDecode } from 'jwt-decode'
 
 export const getUserAndExpTimeFromToken = (token) => {
   const decodedToken = getDecodedJWTToken(token)

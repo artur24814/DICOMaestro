@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useLocation, Navigate } from 'react-router-dom'
-import { LOGIN_PAGE_URL } from '../consts/urls';
+import { LOGIN_PAGE_URL } from '../consts/urls'
 
 const withAuth = (WrappedComponent) => {
   const AuthenticatedComponent = (props) => {
