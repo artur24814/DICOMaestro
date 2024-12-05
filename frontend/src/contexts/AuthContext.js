@@ -1,10 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react"
-import { useNavigate } from "react-router-dom"
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../api/axiosConfig.js'
-import { MAX_TOKEN_LIFE_TIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../api/tokenConfig.js"
-import { LOGIN_PAGE_URL } from "../consts/urls"
-import { LOGIN_API_URL, REFRESH_API_TOKEN } from "../consts/apiUrls.js"
-import { getDecodedJWTToken, getUserFromDecodedToken } from "../utils/tokenDecode.js"
+import { MAX_TOKEN_LIFE_TIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '../api/tokenConfig.js'
+import { LOGIN_PAGE_URL } from '../consts/urls'
+import { LOGIN_API_URL, REFRESH_API_TOKEN } from '../consts/apiUrls.js'
+import { getDecodedJWTToken, getUserFromDecodedToken } from '../utils/tokenDecode.js'
 
 const AuthContext = createContext(null)
 
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
   }, [navigate])
 
   const setNewToken = useCallback(async (refreshToken) => {
-    const response = await api.post(REFRESH_API_TOKEN, {refresh: refreshToken})
+    const response = await api.post(REFRESH_API_TOKEN, { refresh: refreshToken })
     if (response.status === 200) {
       localStorage.setItem(ACCESS_TOKEN_NAME, response.data.access)
     } else {
@@ -61,7 +61,7 @@ const AuthProvider = ({ children }) => {
       setNewToken(refreshToken)
     }
     const interval = setInterval(() => {
-      if (refreshToken){
+      if (refreshToken) {
         setNewToken(refreshToken)
       }
     }, MAX_TOKEN_LIFE_TIME)

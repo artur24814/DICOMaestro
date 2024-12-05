@@ -3,7 +3,6 @@ import { Container, Row, Col, Button, Navbar, Nav, Card } from 'react-bootstrap'
 import { FiLayers } from 'react-icons/fi'
 import ImageCamvasComponent from './ImageCamvasComponent'
 
-
 const ImageManipulationComponent = (metadata) => {
   const metaDataTable = Object.entries(metadata.metadata).filter(([key]) => key !== 'Images' && key !== 'PixelData')
   const imageObjects = metadata.metadata.Images.map((url, index) => ({
@@ -30,9 +29,9 @@ const ImageManipulationComponent = (metadata) => {
 
   return (
     <div>
-      <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar bg='dark' variant='dark' expand='lg'>
         <Container fluid>
-          <Nav className="me-auto">
+          <Nav className='me-auto'>
             <Nav.Link>
               <FiLayers /> Data
             </Nav.Link>
@@ -46,18 +45,18 @@ const ImageManipulationComponent = (metadata) => {
         </Container>
       </Navbar>
 
-      <Container fluid className="min-vh-100">
+      <Container fluid className='min-vh-100'>
         <Row>
 
           {/* Left Panel: Thumbnails */}
           {showLeftPanel && (
-            <Col md={left} className="d-none d-md-block bg-body-secondary bg-gradient border border-1 border-end images-container">
-              <div className="d-flex flex-column">
+            <Col md={left} className='d-none d-md-block bg-body-secondary bg-gradient border border-1 border-end images-container'>
+              <div className='d-flex flex-column'>
                 {imageObjects.map((image, index) => (
                   <Button
                     key={image.id}
-                    className="mb-2 p-1"
-                    variant="light"
+                    className='mb-2 p-1'
+                    variant='light'
                     onClick={() => setSelectedImage(imageObjects[index])}
                   >
                     <img src={image.src} alt={image.alt} style={{ width: '60px' }} />
@@ -68,33 +67,33 @@ const ImageManipulationComponent = (metadata) => {
           )}
 
           <Col md={center} className='bg-dark-subtle'>
-            <ImageCamvasComponent key={selectedImage.id} imageSrc={selectedImage.src}/>
+            <ImageCamvasComponent key={selectedImage.id} imageSrc={selectedImage.src} />
           </Col>
 
           {/* Right Panel: Display fake data */}
           {showRightPanel && (
-           <Col md={right} className="d-none d-md-block bg-body-secondary bg-gradient border border-1 border-end table-container pt-3">
-            <h5>Metadata:</h5>
-            <Row xs={1} md={1} lg={1} className="g-2 pb-3">
-              {metaDataTable.map(([key, value], index) => (
-                <Col key={index}>
-                  <Card>
-                    <Card.Body className="p-2">
-                      <Card.Title className='fs-6'>{key}</Card.Title>
-                      <Card.Text className="text-muted p-0" style={{ fontSize: '0.8rem' }}>
-                        {typeof value === 'object' ? JSON.stringify(value, null, 2) : value}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-          </Col>
+            <Col md={right} className='d-none d-md-block bg-body-secondary bg-gradient border border-1 border-end table-container pt-3'>
+              <h5>Metadata:</h5>
+              <Row xs={1} md={1} lg={1} className='g-2 pb-3'>
+                {metaDataTable.map(([key, value], index) => (
+                  <Col key={index}>
+                    <Card>
+                      <Card.Body className='p-2'>
+                        <Card.Title className='fs-6'>{key}</Card.Title>
+                        <Card.Text className='text-muted p-0' style={{ fontSize: '0.8rem' }}>
+                          {typeof value === 'object' ? JSON.stringify(value, null, 2) : value}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </Col>
           )}
         </Row>
       </Container>
     </div>
-  );
-};
+  )
+}
 
 export default ImageManipulationComponent

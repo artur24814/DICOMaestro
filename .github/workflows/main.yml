@@ -1,0 +1,101 @@
+name: Workflow for JS/React and Python Tests
+
+on: [push]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./backend
+
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{matrix.python-version}}
+
+      - name: Instal dependencies
+        run: |
+          python -m pip install  --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          flake8
+          pytest
+
+  test-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: ./frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Build
+        run: npm run build
+
+      - name: Run Standard.js Linter
+        run: npx standard
+
+  build-docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test-frontend, test-backend]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+      - name: Login into Docker
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:backend -f backend/Dockerfile ./backend 
+      - name: Push Backend Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_IMAGE_TAG }}:backend
+      - name: Build Frontend Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:frontend -f frontend/Dockerfile ./frontend 
+      - name: Push Frontend Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_IMAGE_TAG }}:frontend
+      - name: Build Nginix Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_TAG }}:nginx -f nginx/Dockerfile ./nginx  
+      - name: Push Nginix Docker Image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_IMAGE_TAG }}:nginx

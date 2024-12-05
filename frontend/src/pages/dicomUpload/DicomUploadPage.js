@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-curly-spacing, multiline-ternary */
+
 import React, { useState, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import withAuth from '../../utils/withAuth'
@@ -12,26 +14,25 @@ const DicomUploadPage = () => {
   const [dicomFile, setDicomFile] = useState()
 
   const fetchDicomMetadata = useCallback(async () => {
-    if (!dicomFile) return;
+    if (!dicomFile) return
     const formData = new FormData()
     formData.append('file', dicomFile)
 
     const response = await api.post(DICOM_READ_API_URL, formData, {
       headers: {
         ...api.defaults.headers.common,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     return response.data
   }, [dicomFile])
 
-  const { data: dicomMetadata, isError, isLoading } = useQuery({
-      queryKey: dicomFile ? ['dicomMetadata', dicomFile.name] : null,
-      queryFn: fetchDicomMetadata,
-      enabled: !!dicomFile,
-      staleTime: 60000,
-    }
-  )
+  const { data: dicomMetadata, isLoading } = useQuery({
+    queryKey: dicomFile ? ['dicomMetadata', dicomFile.name] : null,
+    queryFn: fetchDicomMetadata,
+    enabled: !!dicomFile,
+    staleTime: 60000
+  })
 
   const handleSubmit = (data) => {
     if (data.dicomFile && data.dicomFile[0] !== dicomFile) {
@@ -42,12 +43,12 @@ const DicomUploadPage = () => {
   return (
     <>
       {!dicomFile ? (
-        <DicomFileUploadForm handleFormSubmit={handleSubmit}/>
-        ) : isLoading ? (
-          <FullScreenSpinner />
-        ) : (
-          <ImageManipulationComponent metadata={dicomMetadata} />
-        )}
+        <DicomFileUploadForm handleFormSubmit={ handleSubmit } />
+      ) : isLoading ? (
+        <FullScreenSpinner />
+      ) : (
+        <ImageManipulationComponent metadata={dicomMetadata} />
+      )}
     </>
   )
 }

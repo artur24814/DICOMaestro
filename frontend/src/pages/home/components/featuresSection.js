@@ -6,13 +6,13 @@ import featureImage3 from '../../../assets/img/feature-3.jpeg'
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-5 bg-light">
+    <section id='features' className='py-5 bg-light'>
       <Container>
-        <h2 className="text-center mb-5 fw-bold">Key Features</h2>
+        <h2 className='text-center mb-5 fw-bold'>Key Features</h2>
         <Row>
-          <Col md={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Img variant="top" src={featureImage1} alt="Feature 1" />
+          <Col md={4} className='mb-4'>
+            <Card className='shadow-sm h-100'>
+              <Card.Img variant='top' src={featureImage1} alt='Feature 1' />
               <Card.Body>
                 <Card.Title>View DICOM Images</Card.Title>
                 <Card.Text>
@@ -21,9 +21,9 @@ const FeaturesSection = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Img variant="top" src={featureImage2} className='h-100 object-fit-cover' alt="Feature 2" />
+          <Col md={4} className='mb-4'>
+            <Card className='shadow-sm h-100'>
+              <Card.Img variant='top' src={featureImage2} className='h-100 object-fit-cover' alt='Feature 2' />
               <Card.Body>
                 <Card.Title>Explore Metadata</Card.Title>
                 <Card.Text>
@@ -32,9 +32,9 @@ const FeaturesSection = () => {
               </Card.Body>
             </Card>
           </Col>
-          <Col md={4} className="mb-4">
-            <Card className="shadow-sm h-100">
-              <Card.Img variant="top" src={featureImage3} alt="Feature 3" />
+          <Col md={4} className='mb-4'>
+            <Card className='shadow-sm h-100'>
+              <Card.Img variant='top' src={featureImage3} alt='Feature 3' />
               <Card.Body>
                 <Card.Title>Create Custom Files</Card.Title>
                 <Card.Text>

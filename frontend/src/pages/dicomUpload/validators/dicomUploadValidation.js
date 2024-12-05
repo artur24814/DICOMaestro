@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 const dicomUploadShema = yup.object().shape({
-  dicomFile: yup.mixed().required("File is required").test(
+  dicomFile: yup.mixed().required('File is required').test(
     'fileFormat', 'Invalid file extension. Allowed: .dcm, .DCM, .zip', (value) => {
       if (!value || value === 0) return false
       const allowedExtensions = ['.dcm', '.zip']
