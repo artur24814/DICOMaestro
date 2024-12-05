@@ -48,6 +48,9 @@
     "globals": [
       "localStorage",
       "Image"
+    ],
+    "ignore": [
+      "build/"
     ]
   },
   "devDependencies": {
