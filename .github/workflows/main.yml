@@ -3,14 +3,60 @@ name: Workflow for JS/React and Python Tests
 on: [push]
 
 jobs:
-  trigger-js-react-tests:
-    name: Trigger JS/React Tests
-    uses: ./.github/workflows/js-react-test.yml
-    with:
-      ref: ${{ github.sha }}
+  test-backend:
+    runs-on: ubuntu-latest
 
-  trigger-python-tests:
-    name: Trigger Python Tests
-    uses: ./.github/workflows/python-test.yml
-    with:
-      ref: ${{ github.sha }}
+    defaults:
+      run:
+        working-directory: ./backend
+
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{matrix.python-version}}
+
+      - name: Instal dependencies
+        run: |
+          python -m pip install  --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          flake8
+          pytest
+
+  test-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: ./frontend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Build
+        run: npm run build
+
+      - name: Run Standard.js Linter
+        run: npx standard
