@@ -12,9 +12,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: artur24814/dicomaestro:backend
     container_name: backend
     restart: always
     command: >
@@ -39,9 +37,7 @@ services:
       - db
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: artur24814/dicomaestro:frontend
     container_name: frontend
     volumes:
       - frontend_build:/frontend/build
@@ -50,7 +46,7 @@ services:
     restart: always
 
   nginx:
-    image: nginx:stable-alpine
+    image: artur24814/dicomaestro:nginx
     container_name: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
