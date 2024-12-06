@@ -23,7 +23,7 @@ def test_file_upload_text_file(api_client):
     response = api_client.post(BASE_URL, {'file': invalid_file}, format='multipart')
 
     assert response.status_code == 400
-    assert "Invalid DICOM file" in response.json()['error']
+    assert response.json()['file'] == ["Invalid file type. Only .dcm, .DCM, .zip are allowed."]
 
 
 @pytest.mark.django_db
@@ -33,7 +33,7 @@ def test_file_upload_lack_file(api_client):
 
     assert response.status_code == 400
     response_data = response.json()
-    assert response_data["error"] == "No file provided"
+    assert response_data["file"] == ["This field may not be null."]
 
 
 @pytest.mark.django_db
