@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Requirements apps
     'rest_framework',
     'corsheaders',
+    'adrf',
     
     # Apps
     'jwt_auth.apps.JwtAuthConfig',
