@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'jwt_auth.apps.JwtAuthConfig',
     'accounts.apps.AccountsConfig',
     'common.apps.CommonConfig',
+    'dicom_format.apps.DicomFormatConfig',
 ]
 
 MIDDLEWARE = [
