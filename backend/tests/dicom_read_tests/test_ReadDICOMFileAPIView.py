@@ -125,3 +125,20 @@ def test_upload_valid_dicom_real_file_with_required_specific_field_expect_list(a
         assert len(response_data['Images']) == 96
         assert isinstance(response_data['Images'][0], str)
         assert response_data['ImageFormat'] == 'PNG'
+
+
+@pytest.mark.django_db
+@assert_num_queries(0)
+def test_upload_valid_dicom_real_file_with_required_invalid_field_expect_error(api_client):
+    # File source -> https://www.rubomedical.com/dicom_files/
+    file_path = FileLoader.load_file('tests/testing_files/dicom/0002.DCM')
+    with open(file_path, 'rb') as dicom_file:
+        response = api_client.post(
+            BASE_URL + "?fields=Manufacturer,PatientName,StudyDate,Balabla,FakeField,Tadam",
+            {'file': dicom_file},
+            format='multipart'
+        )
+
+        assert response.status_code == 400
+        response_data = response.json()
+        assert response_data['fields'] == ["Invalid fields: Balabla, FakeField, Tadam"]

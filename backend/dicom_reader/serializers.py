@@ -1,5 +1,6 @@
 import os
 from rest_framework import serializers
+from dicom_format.utils import get_allowed_dicom_fields
 
 
 class DicomQueryParamsSerializer(serializers.Serializer):
@@ -20,14 +21,23 @@ class DicomQueryParamsSerializer(serializers.Serializer):
 
     def validate_fields(self, value):
         if value:
+            allowed_fields = get_allowed_dicom_fields()
             try:
-                field_list = value[0].split(",")
-                if not all(field_list):
-                    raise serializers.ValidationError("Fields contain empty values.")
+                field_list = set(value.split(","))
             except Exception as e:
                 raise serializers.ValidationError(
                     "Invalid format for fields. Should be: field,field,..."
                 ) from e
+
+            if not all(field_list):
+                raise serializers.ValidationError("Fields contain empty values.")
+
+            invalid_fields = field_list - allowed_fields
+            if invalid_fields:
+                sorted_invalid_fields = sorted(invalid_fields)
+                raise serializers.ValidationError(
+                    f"Invalid fields: {', '.join(sorted_invalid_fields)}"
+                )
         return value
 
     def validate_return_format(self, value):
