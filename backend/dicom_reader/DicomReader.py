@@ -1,6 +1,7 @@
 import base64
 from io import BytesIO
 from PIL import Image
+import numpy as np
 from pydicom.dataset import FileDataset
 
 
@@ -46,10 +47,10 @@ class DicomReader:
             image_data['Images'] = images_base64
         return image_data
 
-    def is_a_2D_image_or_a_singleLayer_3D_image(self, pixel_array) -> bool:
+    def is_a_2D_image_or_a_singleLayer_3D_image(self, pixel_array: np.ndarray) -> bool:
         return pixel_array.ndim == 2 or (pixel_array.ndim == 3 and pixel_array.shape[0] == 1)
 
-    def create_2d_image_base64(self, pixel_array) -> BytesIO:
+    def create_2d_image_base64(self, pixel_array: np.ndarray) -> BytesIO:
         img = Image.fromarray(pixel_array)
         img_byte_arr = BytesIO()
         img.save(img_byte_arr, format='PNG')
@@ -57,10 +58,10 @@ class DicomReader:
 
         return base64.b64encode(img_byte_arr.read()).decode('utf-8')
 
-    def is_a_3D_image_and_the_expected_gif_format(self, pixel_array, expected_format: str):
+    def is_a_3D_image_and_the_expected_gif_format(self, pixel_array: np.ndarray, expected_format: str) -> bool:
         return pixel_array.ndim == 3 and expected_format == 'gif'
 
-    def create_gif_image_base64(self, pixel_array) -> BytesIO:
+    def create_gif_image_base64(self, pixel_array: np.ndarray) -> BytesIO:
         frames = [Image.fromarray(pixel_array[i]) for i in range(pixel_array.shape[0])]
 
         img_byte_arr = BytesIO()
