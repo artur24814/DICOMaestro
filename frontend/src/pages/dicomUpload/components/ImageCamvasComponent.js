@@ -1,9 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Container } from 'react-bootstrap'
 
-const ImageCamvasComponent = ({ imageSrc }) => {
+const ImageCamvasComponent = ({ imageSrc, activeTool }) => {
   const canvasRef = useRef(null)
-  const [isDrawing, setIsDrawing] = useState(false)
 
   useEffect(() => {
     if (imageSrc) {
@@ -19,28 +18,24 @@ const ImageCamvasComponent = ({ imageSrc }) => {
     }
   }, [imageSrc])
 
-  const startDrawing = (e) => {
-    const canvas = canvasRef.current
-    const rect = canvas.getBoundingClientRect()
-    const ctx = canvas.getContext('2d')
-    ctx.beginPath()
-    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top)
-    setIsDrawing(true)
+  const handleMouseDown = (event) => {
+    if (activeTool) activeTool.onMouseDown(event, { canvas: canvasRef.current })
   }
 
-  const draw = (e) => {
-    if (!isDrawing) return
-    const canvas = canvasRef.current
-    const rect = canvas.getBoundingClientRect()
-    const ctx = canvas.getContext('2d')
-    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top)
-    ctx.strokeStyle = 'red'
-    ctx.lineWidth = 2
-    ctx.stroke()
+  const handleMouseMove = (event) => {
+    if (activeTool) activeTool.onMouseMove(event, { canvas: canvasRef.current })
   }
 
-  const stopDrawing = () => {
-    setIsDrawing(false)
+  const handleMouseUp = (event) => {
+    if (activeTool) activeTool.onMouseUp(event, { canvas: canvasRef.current })
+  }
+
+  const handleMouseOut = (event) => {
+    if (activeTool) activeTool.onMouseOut(event, { canvas: canvasRef.current })
+  }
+
+  const handleRightClick = (event) => {
+    if (activeTool) activeTool.onRightClick(event, { canvas: canvasRef.current })
   }
 
   return (
@@ -53,10 +48,11 @@ const ImageCamvasComponent = ({ imageSrc }) => {
           maxWidth: '100%',
           display: imageSrc ? 'block' : 'none'
         }}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseOut={stopDrawing}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseOut={handleMouseOut}
+        onContextMenu={handleRightClick}
       />
       {!imageSrc && (
         <p style={{ color: 'gray' }}>No image to display on canvas.</p>

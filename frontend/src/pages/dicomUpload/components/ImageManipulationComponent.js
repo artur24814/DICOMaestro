@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Button, Navbar, Nav, Card } from 'react-bootstrap'
-import { FiLayers } from 'react-icons/fi'
+import { LuPencilLine, LuPanelLeftOpen, LuPanelLeftClose, LuPanelRightOpen, LuPanelRightClose } from 'react-icons/lu'
 import ImageCamvasComponent from './ImageCamvasComponent'
+import LineTool from '../../../components/LineTool'
 
 const ImageManipulationComponent = (metadata) => {
   const metaDataTable = Object.entries(metadata.metadata).filter(([key]) => key !== 'Images' && key !== 'PixelData')
@@ -14,9 +15,11 @@ const ImageManipulationComponent = (metadata) => {
   const [showLeftPanel, setShowLeftPanel] = useState(true)
   const [showRightPanel, setShowRightPanel] = useState(true)
   const [selectedImage, setSelectedImage] = useState(imageObjects[0])
+  const [activeTool, setActiveTool] = useState(null)
 
   const toggleLeftPanel = () => setShowLeftPanel(!showLeftPanel)
   const toggleRightPanel = () => setShowRightPanel(!showRightPanel)
+  const handleSelectTool = (tool) => setActiveTool(tool)
 
   const getColSizes = () => {
     if (showLeftPanel && showRightPanel) return { left: 1, center: 9, right: 2 }
@@ -32,14 +35,16 @@ const ImageManipulationComponent = (metadata) => {
       <Navbar bg='dark' variant='dark' expand='lg'>
         <Container fluid>
           <Nav className='me-auto'>
-            <Nav.Link>
-              <FiLayers /> Data
-            </Nav.Link>
+            <div class='vr text-white' />
             <Nav.Link onClick={toggleLeftPanel}>
-              {showLeftPanel ? 'Hide Left Panel' : 'Show Left Panel'}
+              {showLeftPanel ? <LuPanelLeftClose /> : <LuPanelLeftOpen />}
             </Nav.Link>
             <Nav.Link onClick={toggleRightPanel}>
-              {showRightPanel ? 'Hide Right Panel' : 'Show Right Panel'}
+              {showRightPanel ? <LuPanelRightClose /> : <LuPanelRightOpen />}
+            </Nav.Link>
+            <div class='vr text-white' />
+            <Nav.Link onClick={() => handleSelectTool(new LineTool())}>
+              <LuPencilLine />
             </Nav.Link>
           </Nav>
         </Container>
@@ -67,7 +72,7 @@ const ImageManipulationComponent = (metadata) => {
           )}
 
           <Col md={center} className='bg-dark-subtle'>
-            <ImageCamvasComponent key={selectedImage.id} imageSrc={selectedImage.src} />
+            <ImageCamvasComponent key={selectedImage.id} imageSrc={selectedImage.src} activeTool={activeTool} />
           </Col>
 
           {/* Right Panel: Display fake data */}
