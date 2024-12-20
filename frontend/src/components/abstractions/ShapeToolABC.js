@@ -1,14 +1,20 @@
-import DrawingTool from './abstractions/DrawingToolABC.js'
+import DrawingTool from './DrawingToolABC'
 
-class LineTool extends DrawingTool {
+class ShapeTool extends DrawingTool {
   constructor (color = 'black') {
     super(color)
     this.startPoint = null
+    this.drawingShape = false
+  }
+
+  drawShape () {
+    throw new Error('Method "drawShape()" must be implemented.')
   }
 
   onMouseDown (event, context) {
     const { offsetX, offsetY } = event.nativeEvent
     this.startPoint = { x: offsetX, y: offsetY }
+    this.drawingShape = true
 
     const canvas = context.canvas
     const ctx = canvas.getContext('2d')
@@ -16,48 +22,30 @@ class LineTool extends DrawingTool {
   }
 
   onMouseMove (event, context) {
-    if (this.startPoint) {
+    if (this.startPoint && this.drawingShape) {
       const { offsetX, offsetY } = event.nativeEvent
       const canvas = context.canvas
       const ctx = canvas.getContext('2d')
-
       ctx.putImageData(this.canvasState, 0, 0)
-
-      ctx.beginPath()
-      ctx.moveTo(this.startPoint.x, this.startPoint.y)
-      ctx.lineTo(offsetX, offsetY)
-      ctx.strokeStyle = this.color
-      ctx.stroke()
+      this.drawShape(offsetX, offsetY, ctx)
     }
   }
 
   onMouseUp (event, context) {
-    this.drawingLine = false
+    this.drawingShape = false
     this.startPoint = null
   }
 
   onMouseOut (event, context) {
-    if (this.drawingLine) {
+    if (this.drawingShape) {
       const canvas = context.canvas
       const ctx = canvas.getContext('2d')
 
       ctx.putImageData(this.canvasState, 0, 0)
-      this.drawingLine = false
-      this.startPoint = null
-    }
-  }
-
-  onRightClick (event, context) {
-    event.preventDefault()
-    if (this.drawingLine) {
-      const canvas = context.canvas
-      const ctx = canvas.getContext('2d')
-
-      ctx.putImageData(this.canvasState, 0, 0)
-      this.drawingLine = false
+      this.drawingRectangle = false
       this.startPoint = null
     }
   }
 }
 
-export default LineTool
+export default ShapeTool

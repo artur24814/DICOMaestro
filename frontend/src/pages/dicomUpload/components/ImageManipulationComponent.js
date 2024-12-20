@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
 import { Container, Row, Col, Button, Navbar, Nav, Card } from 'react-bootstrap'
 import { LuPencilLine, LuPanelLeftOpen, LuPanelLeftClose, LuPanelRightOpen, LuPanelRightClose } from 'react-icons/lu'
+import { BiRectangle } from 'react-icons/bi'
+import { FaPaintbrush } from 'react-icons/fa6'
+import { FaPen } from 'react-icons/fa'
 import ImageCamvasComponent from './ImageCamvasComponent'
 import LineTool from '../../../components/LineTool'
+import RectangleTool from '../../../components/RectangleTool'
+import PaintTool from '../../../components/PaintTool'
+import DrawTool from '../../../components/DrawTool'
 
 const ImageManipulationComponent = (metadata) => {
   const metaDataTable = Object.entries(metadata.metadata).filter(([key]) => key !== 'Images' && key !== 'PixelData')
@@ -35,16 +41,25 @@ const ImageManipulationComponent = (metadata) => {
       <Navbar bg='dark' variant='dark' expand='lg'>
         <Container fluid>
           <Nav className='me-auto'>
-            <div class='vr text-white' />
+            <div className='vr text-white' />
             <Nav.Link onClick={toggleLeftPanel}>
               {showLeftPanel ? <LuPanelLeftClose /> : <LuPanelLeftOpen />}
             </Nav.Link>
             <Nav.Link onClick={toggleRightPanel}>
               {showRightPanel ? <LuPanelRightClose /> : <LuPanelRightOpen />}
             </Nav.Link>
-            <div class='vr text-white' />
+            <div className='vr text-white' />
+            <Nav.Link onClick={() => handleSelectTool(new DrawTool())}>
+              <FaPen />
+            </Nav.Link>
+            <Nav.Link onClick={() => handleSelectTool(new PaintTool())}>
+              <FaPaintbrush />
+            </Nav.Link>
             <Nav.Link onClick={() => handleSelectTool(new LineTool())}>
               <LuPencilLine />
+            </Nav.Link>
+            <Nav.Link onClick={() => handleSelectTool(new RectangleTool())}>
+              <BiRectangle />
             </Nav.Link>
           </Nav>
         </Container>
