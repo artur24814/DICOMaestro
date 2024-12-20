@@ -1,13 +1,41 @@
+.images-container {
+    position: relative;
+    max-height: 100vh;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 15px;
+}
+
 .table-container {
+    position: relative;
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding-right: 15px;
 }
-.images-container {
-    max-height: 100vh;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-right: 15px;
+
+.open-button {
+    position: absolute;
+    z-index: 1050;
+    width: 30px !important;
+    display: flex;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    top: 50%;
+    color: black !important;
+}
+
+.move-right {
+    transform: translateY(-50%);
+    border-top-right-radius: 50% !important;
+    border-bottom-right-radius: 50% !important;
+    border-left: none;
+}
+
+.move-left {
+    transform: translateY(50%);
+    border-top-left-radius: 50% !important;
+    border-bottom-left-radius: 50% !important;
+    border-right: none;
 }

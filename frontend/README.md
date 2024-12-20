@@ -1,70 +1,103 @@
-# Getting Started with Create React App
+# DICOMaestro Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Setup (React):
+* Navigate to the frontend directory:
+    ```bash
+    cd ../frontend
+    ```
+* Install dependencies:
+    ```bash
+    npm install
+    ```
+* Start the development server:
+    ```bash
+    npm start
+    ```
+## Usage
 
-## Available Scripts
+Open your browser and navigate to `http://localhost:3000`.
 
-In the project directory, you can run:
+## Adding New Tools to the Canvas (Frontend):
+The frontend of DICOMaestro includes a canvas where users can interact with DICOM images and sequences. To extend the functionality of this canvas, you can create new tools that manipulate the images, such as drawing lines, rectangles, or other shapes.
 
-### `npm start`
+To add new tools, follow these steps:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Step 1: Understand the Tool Structure
+Tools inherit from base classes:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* DrawingTool: Base class for tools that handle freeform drawing (e.g., lines, shapes).
+* ShapeTool (optional): A subclass of DrawingTool for tools that work with geometric shapes like rectangles, circles, etc.
+### Step 2: Create a New Tool
+1. Decide the Type of Tool:
 
-### `npm test`
+* For freeform drawing tools, extend DrawingTool.
+* For shape-based tools (rectangles, circles, etc.), extend ShapeTool.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Implement Your Tool:
 
-### `npm run build`
+* Create a new file for the tool in the `components/` directory.
+* Implement the required methods: `onMouseDown`, `onMouseMove`, `onMouseUp`, and optionally `onMouseOut`.
+* Use the `color` property for tool styling.
+Example: Triangle Tool
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```javascript
+import ShapeTool from './abstractions/ShapeToolABC';
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+class TriangleTool extends ShapeTool {
+  constructor(color = 'black', , lineWidth = 1) {
+    super(color, lineWidth)
+  }
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+  drawShape(offsetX, offsetY, ctx) {
+    const { x: startX, y: startY } = this.startPoint
 
-### `npm run eject`
+    ctx.beginPath()
+    ctx.moveTo(startX, startY)
+    ctx.lineTo(offsetX, startY) // Horizontal line
+    ctx.lineTo((startX + offsetX) / 2, offsetY) // Apex of the triangle
+    ctx.closePath()
+    ctx.strokeStyle = this.color
+    ctx.stroke()
+  }
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+export default TriangleTool
+```
+### Step 3: Register Your Tool in the ToolBarComponent.js
+Import the Tool: In the component or manager that handles tool selection:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+Skopiuj kod
+import TriangleTool from '../../../components/TriangleTool'
+```
+Add Tool to the UI: Add buttons or menu items to allow users to select your tool:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```javascript
+<Nav className='me-auto'>
+  <div className='vr text-white' />
+  <Nav.Link onClick={() => handleSelectTool(new DrawTool())}>
+    <FaPen />
+  </Nav.Link>
+  <Nav.Link onClick={() => handleSelectTool(new PaintTool())}>
+    <FaPaintbrush />
+  </Nav.Link>
+  <Nav.Link onClick={() => handleSelectTool(new LineTool())}>
+    <LuPencilLine />
+  </Nav.Link>
+  <Nav.Link onClick={() => handleSelectTool(new RectangleTool())}>
+    <BiRectangle />
+  </Nav.Link>
+  <Nav.Link onClick={() => handleSelectTool(new TriangleTool())}> // Add Here your class
+    <BiTriangle /> // Add here icon
+  </Nav.Link>
+</Nav>
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Step 4: Test Your Tool
+* Ensure the tool functions correctly in the canvas:
+    * It should draw the intended shape or line.
+    * Verify interactions with undo/redo functionality and proper behavior on onMouseOut.
+### Step 5: Submit Your Changes
+1. Write Tests (if applicable): Make sure the new tool is covered by tests.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+2. Submit a Pull Request: Fork the repository, make your changes, and submit a pull request.

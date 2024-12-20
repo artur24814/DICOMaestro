@@ -64,6 +64,45 @@ Processes data locally without storing sensitive information.
     ```bash
     npm start
     ```
+
+### Alternative Setup Using Docker:
+You can also use Docker to set up both the backend and frontend with the docker-compose.dev.yml file.
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/yourusername/DICOMaestro.git
+    cd DICOMaestro
+    ```
+2. Create a `.env` file: In the root directory of the project, create a .env file and configure it with the following values:
+
+    ```env
+    SECRET_KEY='super_secret'
+    DEBUG=True
+
+    DB_HOST='db'
+    DB_DB='postgres'
+    DB_PORT=5432
+    DB_USER='postgres'
+    DB_PASSWORD='super_password'
+
+    DJANGO_ALLOWED_HOSTS='localhost 0.0.0.0 127.0.0.1'
+
+    CSRF_TRUSTED_ORIGINS='http://localhost:80'
+    ```
+3. Build and start the containers: From the root directory, use the following command to build and start the Docker containers using `docker-compose.dev.yml`:
+
+    ```bash
+    docker-compose -f docker-compose.dev.yml up --build
+    ```
+    This will set up both the backend (Django) and frontend (React) in Docker containers.
+
+4. Access the Application: Once the containers are running, you can access the application by opening your browser and navigating to:
+
+    * `http://localhost:80` for the frontend
+    * `http://localhost:80/api/` for the backend API (Django)
+
+
 ### Usage
 
 Open your browser and navigate to `http://localhost:3000`.
