@@ -1,8 +1,8 @@
 import DrawingTool from './DrawingToolABC'
 
 class ShapeTool extends DrawingTool {
-  constructor (color = 'black') {
-    super(color)
+  constructor (color = 'black', lineWidth = 2) {
+    super(color, lineWidth)
     this.startPoint = null
     this.drawingShape = false
   }

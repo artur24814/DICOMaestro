@@ -1,8 +1,8 @@
 import DrawingTool from './abstractions/DrawingToolABC'
 
 class DrawTool extends DrawingTool {
-  constructor (color = 'red') {
-    super(color)
+  constructor (color = 'red', lineWidth = 2) {
+    super(color, lineWidth)
     this.drawing = false
   }
 
@@ -31,7 +31,7 @@ class DrawTool extends DrawingTool {
     const ctx = canvas.getContext('2d')
     ctx.lineTo(event.clientX - rect.left, event.clientY - rect.top)
     ctx.strokeStyle = this.color
-    ctx.lineWidth = 2
+    ctx.lineWidth = this.lineWidth
     ctx.stroke()
   }
 }

@@ -1,8 +1,8 @@
 import DrawingTool from './abstractions/DrawingToolABC'
 
 class PaintTool extends DrawingTool {
-  constructor (color = 'black') {
-    super(color)
+  constructor (color = 'black', lineWidth = 2) {
+    super(color, lineWidth)
     this.painting = false
   }
 

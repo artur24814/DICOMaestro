@@ -1,8 +1,8 @@
 import DrawingTool from './abstractions/DrawingToolABC.js'
 
 class LineTool extends DrawingTool {
-  constructor (color = 'black') {
-    super(color)
+  constructor (color = 'black', lineWidth = 2) {
+    super(color, lineWidth)
     this.startPoint = null
   }
 
@@ -27,6 +27,7 @@ class LineTool extends DrawingTool {
       ctx.moveTo(this.startPoint.x, this.startPoint.y)
       ctx.lineTo(offsetX, offsetY)
       ctx.strokeStyle = this.color
+      ctx.lineWidth = this.lineWidth
       ctx.stroke()
     }
   }

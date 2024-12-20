@@ -1,9 +1,10 @@
 class DrawingTool {
-  constructor (color = 'black') {
+  constructor (color = 'black', lineWidth = 2) {
     if (new.target === DrawingTool) {
       throw new Error('Cannot instantiate an abstract class')
     }
     this.color = color
+    this.lineWidth = lineWidth
   }
 
   onMouseDown (event, context) {

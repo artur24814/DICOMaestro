@@ -38,7 +38,7 @@ const ImageManipulationComponent = (metadata) => {
 
   return (
     <div>
-      <Navbar bg='dark' variant='dark' expand='lg'>
+      <Navbar bg='dark' variant='dark' className='p-0 m-0'>
         <Container fluid>
           <Nav className='me-auto'>
             <div className='vr text-white' />
@@ -86,7 +86,7 @@ const ImageManipulationComponent = (metadata) => {
             </Col>
           )}
 
-          <Col md={center} className='bg-dark-subtle'>
+          <Col md={center} className='bg-dark bg-gradient'>
             <ImageCamvasComponent key={selectedImage.id} imageSrc={selectedImage.src} activeTool={activeTool} />
           </Col>
 

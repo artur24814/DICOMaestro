@@ -1,8 +1,8 @@
 import ShapeTool from './abstractions/ShapeToolABC'
 
 class RectangleTool extends ShapeTool {
-  constructor (color = 'black') {
-    super(color)
+  constructor (color = 'black', lineWidth = 1) {
+    super(color, lineWidth)
   }
 
   drawShape (offsetX, offsetY, ctx) {
@@ -11,6 +11,7 @@ class RectangleTool extends ShapeTool {
     ctx.beginPath()
     ctx.rect(this.startPoint.x, this.startPoint.y, width, height)
     ctx.strokeStyle = this.color
+    ctx.lineWidth = this.lineWidth
     ctx.stroke()
   }
 }
