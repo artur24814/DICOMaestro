@@ -23,7 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -47,13 +47,21 @@
   "standard": {
     "globals": [
       "localStorage",
-      "Image"
+      "Image",
+      "expect",
+      "test",
+      "beforeEach",
+      "describe"
     ],
     "ignore": [
       "build/"
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "babel-jest": "^29.7.0",
+    "jest": "^27.5.1",
     "standard": "^17.1.2"
   }
 }
