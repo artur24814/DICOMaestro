@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap'
-import ImageCamvasComponent from './ImageCamvasComponent'
+import ImageCamvasComponent from './ImageCanvasComponent'
 import ToolBarComponent from './ToolBarComponent'
 import LeftPanel from './LeftPanelComponent'
 import RightPanel from './RightPanelComponent'
+import { useMemento } from '../../../contexts/MementoContext/MementoContext'
+
+const MEMENTO_NAME = 'CanvasMemento'
 
 const ImageManipulationComponent = (metadata) => {
   const metaDataTable = Object.entries(metadata.metadata).filter(([key]) => key !== 'Images' && key !== 'PixelData')
@@ -13,6 +16,9 @@ const ImageManipulationComponent = (metadata) => {
     alt: `Image ${index + 1}`
   }))
 
+  const { saveMemento, undoMemento, redoMemento, currentMementoState } = useMemento()
+
+  const [canvasState, setCanvasState] = useState('')
   const [showLeftPanel, setShowLeftPanel] = useState(true)
   const [showRightPanel, setShowRightPanel] = useState(true)
   const [selectedImage, setSelectedImage] = useState(imageObjects[0])
@@ -21,6 +27,7 @@ const ImageManipulationComponent = (metadata) => {
   const toggleLeftPanel = () => setShowLeftPanel(!showLeftPanel)
   const toggleRightPanel = () => setShowRightPanel(!showRightPanel)
   const handleSelectTool = (tool) => setActiveTool(tool)
+  const handleCanvasChange = (newCanvasState) => setCanvasState(newCanvasState)
 
   const getColSizes = () => {
     if (showLeftPanel && showRightPanel) return { left: 1, center: 9, right: 2 }
@@ -31,9 +38,25 @@ const ImageManipulationComponent = (metadata) => {
 
   const { left, center, right } = getColSizes()
 
+  useEffect(() => {
+    const initialState = currentMementoState(MEMENTO_NAME)
+    if (initialState === null) {
+      saveMemento(MEMENTO_NAME, selectedImage.src)
+      setCanvasState(selectedImage.src)
+    } else {
+      setCanvasState(initialState)
+    }
+  }, [currentMementoState, selectedImage.src, saveMemento])
+
   return (
     <div>
-      <ToolBarComponent handleSelectTool={handleSelectTool} />
+      <ToolBarComponent
+        handleSelectTool={handleSelectTool}
+        undoMemento={undoMemento}
+        redoMemento={redoMemento}
+        handleCanvasChange={handleCanvasChange}
+        mementoName={MEMENTO_NAME}
+      />
 
       <Container fluid className='min-vh-100'>
         <Row>
@@ -60,7 +83,7 @@ const ImageManipulationComponent = (metadata) => {
           )}
 
           <Col md={center} className='bg-dark bg-gradient'>
-            <ImageCamvasComponent key={selectedImage.id} imageSrc={selectedImage.src} activeTool={activeTool} />
+            <ImageCamvasComponent key={selectedImage.id} imageSrc={canvasState} activeTool={activeTool} saveMemento={saveMemento} mementoName={MEMENTO_NAME} />
           </Col>
 
           {showRightPanel && (

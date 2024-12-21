@@ -61,6 +61,9 @@ jobs:
       - name: Run Standard.js Linter
         run: npx standard
 
+      - name: Run tests
+        run: npm test
+
   build-docker:
     name: Build Docker Image
     runs-on: ubuntu-latest
