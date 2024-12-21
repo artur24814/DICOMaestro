@@ -23,7 +23,7 @@ class Memento {
   }
 
   undo () {
-    if (this.currentIndex >= 0) {
+    if (this.currentIndex > 0) {
       this.currentIndex--
       return this.history[this.currentIndex]
     }

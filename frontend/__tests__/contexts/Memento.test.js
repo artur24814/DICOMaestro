@@ -1,4 +1,4 @@
-import Memento from '../../src/contexts/MementoContext/Menento.js'
+import Memento from '../../src/contexts/MementoContext/Memento.js'
 
 describe('Memento Class', () => {
   let memento
@@ -35,7 +35,7 @@ describe('Memento Class', () => {
     memento.undo()
     const undoneState = memento.undo()
     expect(undoneState).toBeNull()
-    expect(memento.currentState).toBeNull()
+    expect(memento.currentState).toEqual(state1)
   })
 
   test('should redo to the next state', () => {
