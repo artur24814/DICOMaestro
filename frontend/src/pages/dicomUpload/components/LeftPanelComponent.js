@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
 
-const LeftPanel = ({ imageObjects, setSelectedImage, toggleLeftPanel }) => {
+const LeftPanel = ({ imageObjects, handleCanvasChange, toggleLeftPanel }) => {
   return (
     <>
       <div className='d-flex justify-content-between m-0 mt-1 p-0'>
@@ -14,7 +14,7 @@ const LeftPanel = ({ imageObjects, setSelectedImage, toggleLeftPanel }) => {
             key={image.id}
             className='mb-2 p-1'
             variant='light'
-            onClick={() => setSelectedImage(imageObjects[index])}
+            onClick={() => handleCanvasChange(imageObjects[index].src)}
           >
             <img src={image.src} alt={image.alt} style={{ width: '60px' }} />
           </Button>

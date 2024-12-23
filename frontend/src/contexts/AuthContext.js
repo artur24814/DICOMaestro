@@ -56,11 +56,12 @@ const AuthProvider = ({ children }) => {
   }, [navigate])
 
   const setNewToken = useCallback(async (refreshToken) => {
-    const response = await api.post(REFRESH_API_TOKEN, { refresh: refreshToken })
-    if (response.status === 200) {
+    try {
+      const response = await api.post(REFRESH_API_TOKEN, { refresh: refreshToken })
       localStorage.setItem(ACCESS_TOKEN_NAME, response.data.access)
-    } else {
+    } catch (e) {
       logout()
+      console.error(e)
     }
 
     setFirstPageLoading(false)
