@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, FloatingLabel, Form, Button } from 'react-bootstrap'
+import { Row, Col, FloatingLabel, Form, Button, Spinner } from 'react-bootstrap'
 import userRegistrationSchema from '../validators/UserRegitrationValidation'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -92,8 +92,9 @@ const RegisterForm = () => {
       </Row>
       <Row>
         <Col>
-          <Button className='w-100' type='submit' disabled={mutation.isLoading}>
-            {mutation.isLoading ? 'Registering...' : 'Register'}
+          <Button className='w-100' type='submit' disabled={mutation.isPending}>
+            {mutation.isPending && <Spinner as='span' animation='border' size='sm' role='status' aria-hidden='true' className='me-2' />}
+            {mutation.isPending ? 'Registering...' : 'Register'}
           </Button>
         </Col>
       </Row>
