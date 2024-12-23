@@ -1,6 +1,7 @@
 import React from 'react'
 import { LoginForm } from './components/loginForm.js'
 import { Card, Container, Row, Col } from 'react-bootstrap'
+import { REGISTER_PAGE_URL } from '../../consts/urls.js'
 
 const LoginPage = ({ redirectPath = '/' }) => {
   return (
@@ -12,7 +13,7 @@ const LoginPage = ({ redirectPath = '/' }) => {
               <h3 className='text-center mb-4'>Login</h3>
               <LoginForm onLogin={redirectPath} />
               <p className='text-center mt-3'>
-                Don't have an account? <a href='/register'>Register here</a>
+                Don't have an account? <a href={REGISTER_PAGE_URL}>Register here</a>
               </p>
             </Card.Body>
           </Card>

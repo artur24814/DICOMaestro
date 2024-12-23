@@ -1,4 +1,4 @@
-# DICOMaestro
+# <img src="frontend/public/logo512.png" alt="Diagram aplikacji" width="25" /> DICOMaestro
 
 <strong>DICOMaestro</strong> is a free, open-source application for viewing DICOM images and sequences,
 exploring metadata, and creating custom DICOM files via an API for developers.

@@ -15,13 +15,13 @@ const ImageManipulationComponent = (metadata) => {
     src: `data:image/png;base64,${url}`,
     alt: `Image ${index + 1}`
   }))
+  const selectedImage = imageObjects[0]
 
   const { saveMemento, undoMemento, redoMemento, currentMementoState } = useMemento()
 
   const [canvasState, setCanvasState] = useState('')
   const [showLeftPanel, setShowLeftPanel] = useState(true)
   const [showRightPanel, setShowRightPanel] = useState(true)
-  const [selectedImage, setSelectedImage] = useState(imageObjects[0])
   const [activeTool, setActiveTool] = useState(null)
 
   const toggleLeftPanel = () => setShowLeftPanel(!showLeftPanel)
@@ -68,7 +68,7 @@ const ImageManipulationComponent = (metadata) => {
             >
               <LeftPanel
                 imageObjects={imageObjects}
-                setSelectedImage={setSelectedImage}
+                handleCanvasChange={handleCanvasChange}
                 toggleLeftPanel={toggleLeftPanel}
               />
             </Col>

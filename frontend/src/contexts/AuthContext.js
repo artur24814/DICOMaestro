@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axiosConfig.js'
 import { MAX_TOKEN_LIFE_TIME, ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from '../api/tokenConfig.js'
 import { LOGIN_PAGE_URL } from '../consts/urls'
-import { LOGIN_API_URL, REFRESH_API_TOKEN } from '../consts/apiUrls.js'
+import { LOGIN_API_URL, REGISTER_API_URL, REFRESH_API_TOKEN } from '../consts/apiUrls.js'
 import { getDecodedJWTToken, getUserFromDecodedToken } from '../utils/tokenDecode.js'
 
 const AuthContext = createContext(null)
@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate()
 
-  const login = async (data) => {
+  const login = useCallback(async (data) => {
     const response = await api.post(LOGIN_API_URL, data)
     const user = getUserFromDecodedToken(getDecodedJWTToken(response.data.access))
 
@@ -30,7 +30,17 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem(REFRESH_TOKEN_NAME, response.data.refresh)
     localStorage.setItem('user', user)
     return user
-  }
+  }, [
+    setUser,
+    setIsAuthenticated,
+    setToken,
+    setRefreshToken
+  ])
+
+  const registerUser = useCallback(async (data) => {
+    const response = await api.post(REGISTER_API_URL, data)
+    return response
+  }, [])
 
   const logout = useCallback(() => {
     setUser(null)
@@ -46,11 +56,12 @@ const AuthProvider = ({ children }) => {
   }, [navigate])
 
   const setNewToken = useCallback(async (refreshToken) => {
-    const response = await api.post(REFRESH_API_TOKEN, { refresh: refreshToken })
-    if (response.status === 200) {
+    try {
+      const response = await api.post(REFRESH_API_TOKEN, { refresh: refreshToken })
       localStorage.setItem(ACCESS_TOKEN_NAME, response.data.access)
-    } else {
+    } catch (e) {
       logout()
+      console.error(e)
     }
 
     setFirstPageLoading(false)
@@ -69,7 +80,7 @@ const AuthProvider = ({ children }) => {
   }, [refreshToken, isFirstPageLoading, setNewToken])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, user, token }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, registerUser, logout, user, token }}>
       {children}
     </AuthContext.Provider>
   )
