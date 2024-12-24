@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Requirements apps
     'rest_framework',
+    'rest_framework_api_key',
     'corsheaders',
     'adrf',
     
@@ -126,6 +127,7 @@ if not DEBUG:
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        "rest_framework_api_key.permissions.HasAPIKey",
     ),
 }
 
