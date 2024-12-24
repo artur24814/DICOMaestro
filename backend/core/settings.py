@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'common.apps.CommonConfig',
     'dicom_format.apps.DicomFormatConfig',
+    'developer_accounts.apps.DeveloperAccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -126,8 +127,8 @@ if not DEBUG:
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'jwt_auth.authentications.CookieJWTAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        "rest_framework_api_key.permissions.HasAPIKey",
     ),
 }
 
