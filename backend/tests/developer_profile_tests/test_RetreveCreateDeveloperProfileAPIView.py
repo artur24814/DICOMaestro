@@ -27,7 +27,7 @@ def test_get_non_existing_profile(api_client, developer_app_user):
 
 
 @pytest.mark.django_db
-@assert_num_queries(11)
+@assert_num_queries(11)  # + 3 query for conftest
 def test_create_profile(api_client, developer_app_user):
     api_client.force_authenticate(user=developer_app_user)
     data = {"purpose": "testing"}
