@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'common.apps.CommonConfig',
     'dicom_format.apps.DicomFormatConfig',
-    'developer_accounts.apps.DeveloperAccountsConfig',
+    'developer_auth.apps.DeveloperAuthConfig',
+    'developer_profile.apps.DeveloperProfileConfig'
 ]
 
 MIDDLEWARE = [

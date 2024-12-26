@@ -4,12 +4,13 @@ from rest_framework.mixins import DestroyModelMixin
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from developer_profile.permissions import IsDeveloper
 from .models import DeveloperAPIKey
 from .serializers import DeveloperApiKeySerializer, CreateDeveloperApiKeySerializer
 
 
 class DeveloperApiKeyAPIView(ListCreateAPIView, DestroyModelMixin):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsDeveloper]
     serializer_class = DeveloperApiKeySerializer
 
     def get_queryset(self):

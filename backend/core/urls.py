@@ -24,7 +24,8 @@ urlpatterns = [
     path('api/admin/', admin.site.urls),
     path('api/token/', include('jwt_auth.urls')),
     path('api/auth/', include('accounts.urls')),
-    path('api/developer/', include('developer_accounts.urls')),
+    path('api/developer/auth/', include('developer_auth.urls')),
+    path('api/developer/profiles/', include('developer_profile.urls')),
     path('api/dicom/read/', include('dicom_reader.urls')),
     path('api/dicom-format/', include('dicom_format.urls'))
 ]
