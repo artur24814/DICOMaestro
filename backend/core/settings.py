@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_api_key',
     'corsheaders',
     'adrf',
+    'drf_spectacular',
     
     # Apps
     'jwt_auth.apps.JwtAuthConfig',
@@ -155,8 +156,20 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DICOMaestro API',
+    'DESCRIPTION': 
+        """
+        Free, open-source application for viewing DICOM images and sequences, exploring metadata,
+        and creating custom DICOM files via an API for developers.
+        """,
+    'VERSION': '0.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
