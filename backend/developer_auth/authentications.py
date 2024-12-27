@@ -5,7 +5,7 @@ from .models import DeveloperAPIKey
 
 class APIKeyAuthentication(BaseAuthentication):
 
-    def authenticate(self, request):
+    def authenticate(self, request) -> tuple:
         api_key = request.headers.get("Authorization")
         if not api_key:
             return None

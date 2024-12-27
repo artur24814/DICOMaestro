@@ -20,13 +20,13 @@ class DeveloperApiKeyAPIView(ListCreateAPIView, DestroyModelMixin):
         queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.kwargs['pk'])
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs) -> Response:
         serializer = CreateDeveloperApiKeySerializer(data=request.data, context={"request": request})
         serializer.is_valid()
         data = serializer.save()
         return Response(data, status=status.HTTP_201_CREATED)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs) -> Response:
         obj = self.get_object()
         self.perform_destroy(obj)
         return Response({"detail": "Key deleted successfully."}, status=status.HTTP_204_NO_CONTENT)

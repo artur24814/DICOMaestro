@@ -11,7 +11,7 @@ class DeveloperApiKeySerializer(serializers.ModelSerializer):
 class CreateDeveloperApiKeySerializer(serializers.Serializer):
     name = serializers.CharField(max_length=500, allow_blank=True, required=False)
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> dict:
         if not (key_name := validated_data.get("name", None)) or key_name == "":
             key_name = f"{self.context['request'].user.first_name}-developer-key"
         _, key = DeveloperAPIKey.objects.create_key(name=key_name, user=self.context['request'].user)

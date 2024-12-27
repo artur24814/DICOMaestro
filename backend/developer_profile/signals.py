@@ -5,7 +5,7 @@ from .models import DeveloperProfile
 
 
 @receiver(post_save, sender=DeveloperProfile)
-def add_developer_to_group(sender, instance, created, **kwargs):
+def add_developer_to_group(sender, instance: DeveloperProfile, created: bool, **kwargs) -> None:
     """
     TODO: In future using cache:
     group = cache.get('developer_group')

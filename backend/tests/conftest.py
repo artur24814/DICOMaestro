@@ -1,6 +1,6 @@
 import pytest
 
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APIRequestFactory
 from django.test import Client
 
 from accounts.models import AppUser
@@ -9,6 +9,11 @@ from developer_profile.models import DeveloperProfile
 
 from .testing_data.accounts import BASE_USER_DATA
 from .testing_data.developer_profile import DEVELOPER_USER_DATA, DEVELOPER_PROFILE_DATA
+
+
+@pytest.fixture
+def api_rf():
+    return APIRequestFactory()
 
 
 @pytest.fixture
@@ -44,6 +49,19 @@ def developer_profile(developer_app_user):
         **DEVELOPER_PROFILE_DATA
     )
     return profile
+
+
+@pytest.fixture
+def api_request_factory_with_logged_in_developer(rf, developer_profile):
+    """Fixture to create API requests."""
+    user = developer_profile.user
+
+    def create_request(path):
+        request = rf.get(path)
+        request.user = user
+        return request
+
+    return create_request
 
 
 @pytest.fixture

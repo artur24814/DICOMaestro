@@ -20,3 +20,14 @@ class DeveloperProfile(models.Model):
 
     def __str__(self):
         return f"DeveloperProfile for {self.user.username}"
+
+
+class DeveloperActivityLog(models.Model):
+    developer = models.ForeignKey(AppUser, on_delete=models.CASCADE, related_name="developer_activites")
+    endpoint = models.CharField(max_length=200)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["developer", "timestamp", "endpoint"]),
+        ]
