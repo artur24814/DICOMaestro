@@ -3,7 +3,7 @@ import asyncio
 from pydicom.errors import InvalidDicomError
 from rest_framework import status
 from adrf.views import APIView as AsyncApiView
-# from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -13,7 +13,7 @@ from .serializers import DicomQueryParamsSerializer
 
 class ReadDICOMFileAPIView(AsyncApiView):
     parser_classes = (MultiPartParser, FormParser)
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     async def post(self, request, *args, **kwargs):
         serializer = DicomQueryParamsSerializer(

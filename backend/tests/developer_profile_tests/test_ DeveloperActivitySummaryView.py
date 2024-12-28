@@ -62,7 +62,7 @@ def test_activity_summary_no_logs(api_client, developer_profile):
 def test_activity_summary_different_month(api_client, developer_profile, activity_logs):
     api_client.force_authenticate(user=developer_profile.user)
 
-    today = datetime.today()
+    today = now()
     previous_month = today - relativedelta(months=1)
 
     record = DeveloperActivityLog.objects.create(
