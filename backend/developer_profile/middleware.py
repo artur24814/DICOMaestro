@@ -13,9 +13,10 @@ class APIRateLimitMiddleware:
         }
 
     def __call__(self, request):
+        response = self.get_response(request)
         user = request.user
         if not user or not user.is_authenticated:
-            return self.get_response(request)
+            return response
 
         endpoint_name = self.get_endpoint_name(request)
 
@@ -31,8 +32,7 @@ class APIRateLimitMiddleware:
                 }, status=429)
 
             DeveloperActivityLog.objects.create(developer=user, endpoint=endpoint_name)
-
-        return self.get_response(request)
+        return response
 
     def get_endpoint_name(self, request):
         resolved_url = resolve(request.path_info)

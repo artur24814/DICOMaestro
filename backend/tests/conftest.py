@@ -2,10 +2,11 @@ import pytest
 
 from rest_framework.test import APIClient, APIRequestFactory
 from django.test import Client
+from django.utils.timezone import now
 
 from accounts.models import AppUser
 from developer_auth.models import DeveloperAPIKey
-from developer_profile.models import DeveloperProfile
+from developer_profile.models import DeveloperProfile, DeveloperActivityLog
 
 from .testing_data.accounts import BASE_USER_DATA
 from .testing_data.developer_profile import DEVELOPER_USER_DATA, DEVELOPER_PROFILE_DATA
@@ -49,6 +50,19 @@ def developer_profile(developer_app_user):
         **DEVELOPER_PROFILE_DATA
     )
     return profile
+
+
+@pytest.fixture
+def activity_logs(developer_app_user):
+    logs = [
+        DeveloperActivityLog(
+            developer=developer_app_user,
+            endpoint="test-endpoint",
+            timestamp=now(),
+        )
+        for _ in range(1, 6)
+    ]
+    DeveloperActivityLog.objects.bulk_create(logs)
 
 
 @pytest.fixture

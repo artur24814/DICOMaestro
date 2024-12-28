@@ -171,6 +171,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeveloperProfile'
           description: ''
+  /api/developer/profiles/activity-summary/:
+    get:
+      operationId: api_developer_profiles_activity_summary_list
+      parameters:
+      - in: query
+        name: timestamp__month
+        schema:
+          type: number
+        description: Month
+      - in: query
+        name: timestamp__year
+        schema:
+          type: number
+        description: Year
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeveloperActivityLog'
+          description: ''
   /api/dicom-format/allowed-fields/:
     get:
       operationId: api_dicom_format_allowed_fields_retrieve
@@ -264,6 +291,17 @@ components:
       required:
       - email
       - password
+    DeveloperActivityLog:
+      type: object
+      properties:
+        day:
+          type: string
+          format: date
+        count:
+          type: integer
+      required:
+      - count
+      - day
     DeveloperApiKey:
       type: object
       properties:

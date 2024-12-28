@@ -31,3 +31,6 @@ class DeveloperActivityLog(models.Model):
         indexes = [
             models.Index(fields=["developer", "timestamp", "endpoint"]),
         ]
+
+    def __str__(self):
+        return self.timestamp.strftime("%Y-%m-%d")
