@@ -3,6 +3,8 @@ from io import BytesIO
 
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from rest_framework import status
 
 from tests.factories.dicom_files import SIMPLE_DICOM_FILE
@@ -64,7 +66,6 @@ def test_aupload_valid_dicom_real_file_by_authenticated_user(api_client, base_ap
 
 
 @pytest.mark.django_db
-@assert_num_queries(15)
 def test_aupload_valid_dicom_real_file_by_developer_user(api_client, developer_profile):
     api_client.force_authenticate(user=developer_profile.user)
     payload = {"name": "new-key"}
@@ -73,17 +74,16 @@ def test_aupload_valid_dicom_real_file_by_developer_user(api_client, developer_p
     assert response.status_code == status.HTTP_201_CREATED
     headers = {"Authorization": f"ApiKey {response.data['api_key']}"}
 
+    api_client.logout()
+    response_logout = api_client.post(reverse('developer_auth:api-key'), data=payload)
+    assert response_logout.status_code == status.HTTP_401_UNAUTHORIZED
+
     # File source -> https://www.rubomedical.com/dicom_files/
     file_path = FileLoader.load_file('tests/testing_files/dicom/0002.DCM')
-
     with open(file_path, 'rb') as dicom_file:
-        api_client.logout()
-        response = api_client.post(
-            BASE_URL,
-            {'file': dicom_file},
-            format='multipart',
-            headers=headers
-        )
+        with CaptureQueriesContext(connection) as context:
+            response = api_client.post(BASE_URL, {'file': dicom_file}, format='multipart', headers=headers)
+            assert len(context.captured_queries) <= 5
 
         assert response.status_code == 200
         response_data = response.json()
