@@ -1,9 +1,7 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework import status
+from .authentications import CookieOrRequestDataJWTAuthentication
 
 from .serializers import CustomTokenObtainPairSerializer
 
@@ -25,22 +23,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class CustomTokenRefreshView(TokenRefreshView):
+    authentication_classes = [CookieOrRequestDataJWTAuthentication]
+
     def post(self, request, *args, **kwargs):
-        if (refresh_token := request.COOKIES.get('refresh_token') or request.data.get('refresh')):
-            try:
-                refresh = RefreshToken(refresh_token)
-                access_token = refresh.access_token
-
-                return Response({
-                    'access': str(access_token),
-                })
-            except (InvalidToken, TokenError):
-                return Response(
-                    {'error': 'Invalid or expired refresh token'},
-                    status=status.HTTP_401_UNAUTHORIZED
-                )
-
-        return Response(
-            {'error': 'Refresh token not found in cookies'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        access_token = request.auth
+        return Response({
+            'access': str(access_token),
+        })

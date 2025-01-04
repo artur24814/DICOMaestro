@@ -17,13 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from core.settings import DEBUG
 
 urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('api/admin/', admin.site.urls),
     path('api/token/', include('jwt_auth.urls')),
     path('api/auth/', include('accounts.urls')),
+    path('api/developer/auth/', include('developer_auth.urls')),
+    path('api/developer/profiles/', include('developer_profile.urls')),
     path('api/dicom/read/', include('dicom_reader.urls')),
     path('api/dicom-format/', include('dicom_format.urls'))
 ]

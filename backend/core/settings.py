@@ -40,15 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Requirements apps
+    'django_filters',
     'rest_framework',
+    'rest_framework_api_key',
     'corsheaders',
     'adrf',
+    'drf_spectacular',
     
     # Apps
     'jwt_auth.apps.JwtAuthConfig',
     'accounts.apps.AccountsConfig',
     'common.apps.CommonConfig',
     'dicom_format.apps.DicomFormatConfig',
+    'developer_auth.apps.DeveloperAuthConfig',
+    'developer_profile.apps.DeveloperProfileConfig'
 ]
 
 MIDDLEWARE = [
@@ -60,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # custome middleware
+    'developer_profile.middleware.APIRateLimitMiddleware',
 ]
 
 if DEBUG:
@@ -80,6 +87,31 @@ if DEBUG:
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
+
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': True,
+    }
+else:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.FileHandler',
+                'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True,
+            },
+        },
+    }
 
 ROOT_URLCONF = 'core.urls'
 
@@ -126,9 +158,25 @@ if not DEBUG:
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'developer_auth.authentications.APIKeyAuthentication'
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
     ),
 }
 
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DICOMaestro API',
+    'DESCRIPTION': 
+        """
+        Free, open-source application for viewing DICOM images and sequences, exploring metadata,
+        and creating custom DICOM files via an API for developers.
+        """,
+    'VERSION': '0.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
@@ -164,7 +212,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 

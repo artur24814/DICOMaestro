@@ -42,6 +42,13 @@ class AppUser(AbstractUser):
     def is_staff(self):
         return self.is_admin
 
+    @property
+    def is_developer(self) -> bool:
+        try:
+            return self.developer_profile is not None
+        except AttributeError:
+            return False
+
     def has_perm(self, perm, obj=None):
         return True
 

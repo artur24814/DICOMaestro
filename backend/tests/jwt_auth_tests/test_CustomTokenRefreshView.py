@@ -13,7 +13,7 @@ BASE_TOKEN_REFRESH_URL = reverse('jwt_auth:token_refresh')
 
 
 @pytest.mark.django_db
-@assert_num_queries(1)
+@assert_num_queries(2)
 def test_custom_token_refresh_view_valid_token(client, base_app_user):
     """
     Test the custom token refresh view with a valid refresh token.
@@ -45,7 +45,7 @@ def test_custom_token_refresh_view_invalid_token(client):
     response = client.post(BASE_TOKEN_REFRESH_URL, {'refresh': refresh_token})
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.data['error'] == 'Invalid or expired refresh token'
+    assert response.data['detail'] == 'Invalid or expired JWT token'
 
 
 @pytest.mark.django_db
@@ -55,5 +55,5 @@ def test_custom_token_refresh_view_missing_token(client):
     Test the custom token refresh view when the refresh token is missing from cookies.
     """
     response = client.post('/api/token/refresh/')
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data['error'] == 'Refresh token not found in cookies'
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.data['detail'] == 'Refresh token not found'
