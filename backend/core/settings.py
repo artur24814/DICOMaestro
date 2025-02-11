@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'common.apps.CommonConfig',
     'dicom_format.apps.DicomFormatConfig',
+    'dicom_reader.apps.DicomReaderConfig',
+    'dicom_writer.apps.DicomWriterConfig',
     'developer_auth.apps.DeveloperAuthConfig',
     'developer_profile.apps.DeveloperProfileConfig'
 ]
