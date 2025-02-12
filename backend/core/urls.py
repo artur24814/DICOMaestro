@@ -31,7 +31,7 @@ urlpatterns = [
     path('api/developer/auth/', include('developer_auth.urls')),
     path('api/developer/profiles/', include('developer_profile.urls')),
     path('api/dicom/read/', include('dicom_reader.urls')),
-    # path('api/dicom/write/', include('dicom_writer.urls')),
+    path('api/dicom/write/', include('dicom_writer.urls')),
     path('api/dicom-format/', include('dicom_format.urls'))
 ]
 
