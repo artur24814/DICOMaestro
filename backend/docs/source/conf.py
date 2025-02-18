@@ -12,7 +12,7 @@ import os
 project = 'DICOMaestro'
 copyright = '2025, artur24814'
 author = 'artur24814'
-release = '0.0.0'
+release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

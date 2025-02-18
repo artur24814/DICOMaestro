@@ -14,6 +14,150 @@ This documentation describes the steps for developers to authenticate and intera
 
 Before interacting with the API, developers must have an account on our platform and obtain an access token. This token will be used for authentication in subsequent requests.
 
+--------------------------------------------
+Endpoints that do not require authentication
+--------------------------------------------
+
+1. Get Allowed DICOM Fields
+---------------------------
+
+This endpoint retrieves a list of allowed DICOM fields that can be used in queries or processing.  
+You can filter the results using optional query parameters.
+
+**Endpoint**
+  - **URL**: ``/api/dicom-format/allowed-fields/``
+  - **Method**: ``GET``
+  - **Description**: Returns a JSON object containing the list of allowed DICOM fields, with optional filtering based on query parameters.
+
+**Request**
+  - **Headers**:
+    - ``Authorization``: ``ApiKey your_api_key_here``
+    - ``Content-Type``: ``application/json``
+  - **Query Parameters (Optional)**:
+    
+    - ``fields__contains`` – Returns fields containing the specified substring.
+    - ``fields__startswith`` – Returns fields that start with the specified substring.
+    - ``fields__endswith`` – Returns fields that end with the specified substring.
+    - ``fields__regex`` – Returns fields matching a specified regex pattern.
+
+**Example Request**:
+
+.. code-block:: http
+
+    GET /api/dicom-format/allowed-fields/?fields__contains=Patient HTTP/1.1
+    Host: localhost:8080
+    Authorization: ApiKey amRqSgZZ....
+
+
+**Response**
+    If successful, the API returns a JSON object containing the list of allowed DICOM fields along with the DICOM standard version.
+
+**Example Response**:
+
+.. code-block:: json
+
+    {
+        "allowedFields": [
+            "PatientName",
+            "PatientID",
+            "PatientBirthDate",
+            "PatientSex",
+            "PatientAge",
+            "PatientWeight",
+            "PatientAddress",
+            "PatientTelephoneNumbers",
+            "PatientState",
+            "PatientInsurancePlanCodeSequence"
+        ],
+        "dicomVersion": "3.0.1"
+    }
+
+**Explanation of Response Fields**
+  - ``allowedFields``: A list of DICOM fields that are allowed for use.
+  - ``dicomVersion``: The version of the DICOM standard used by the system.
+
+
+1. Get Required DICOM Field Types
+------------------------------
+
+This endpoint provides a list of required DICOM fields along with their expected data types.
+
+**Endpoint**
+  - **URL**: ``/api/dicom-format/required-field-type/``
+  - **Method**: ``GET``
+    - **Description**: Returns a JSON object containing the required DICOM field types and the DICOM standard version used.
+
+**Request**
+    - **Headers**:
+        - ``Authorization``: ``ApiKey your_api_key_here``
+        - ``Content-Type``: ``application/json``
+
+**Example Request**:
+
+.. code-block:: http
+
+    GET /api/dicom-format/required-field-type/ HTTP/1.1
+    Host: localhost:8080
+    Authorization: ApiKey amRqSgZZ....
+
+**Response**
+    If successful, the API returns a JSON object containing the required DICOM field types and the DICOM version.
+
+**Example Response**:
+
+.. code-block:: json
+
+    {
+        "requiredFieldTypes": {
+            "CommandGroupLength": "<class 'int'>",
+            "CommandLengthToEnd": "<class 'int'>",
+            "AffectedSOPClassUID": "<class 'pydicom.uid.UID'>",
+            "RequestedSOPClassUID": "<class 'pydicom.uid.UID'>",
+            "CommandRecognitionCode": "<class 'str'>",
+            "CommandField": "<class 'int'>",
+            "MessageID": "<class 'int'>",
+            "MessageIDBeingRespondedTo": "<class 'int'>",
+            "Initiator": "<class 'str'>",
+            "Receiver": "<class 'str'>",
+            "FindLocation": "<class 'str'>",
+            "MoveDestination": "<class 'str'>",
+            "Priority": "<class 'int'>",
+            "CommandDataSetType": "<class 'int'>",
+            "NumberOfMatches": "<class 'int'>",
+            "ResponseSequenceNumber": "<class 'int'>",
+            "Status": "<class 'int'>",
+            "OffendingElement": "<class 'tuple'>",
+            "ErrorComment": "<class 'str'>",
+            "ErrorID": "<class 'int'>",
+            "AffectedSOPInstanceUID": "<class 'pydicom.uid.UID'>",
+            "RequestedSOPInstanceUID": "<class 'pydicom.uid.UID'>",
+            "EventTypeID": "<class 'int'>",
+            "AttributeIdentifierList": "<class 'tuple'>",
+            "ActionTypeID": "<class 'int'>",
+            "NumberOfRemainingSuboperations": "<class 'int'>",
+            "NumberOfCompletedSuboperations": "<class 'int'>",
+
+            "....": "...",
+
+            "FloatPixelData": "<class 'bytes'>",
+            "DoubleFloatPixelData": "<class 'bytes'>",
+            "PixelData": "<class 'str'>",
+            "CoefficientsSDVN": "<class 'bytes'>",
+            "CoefficientsSDHN": "<class 'bytes'>",
+            "CoefficientsSDDN": "<class 'bytes'>",
+            "DigitalSignaturesSequence": "<class 'str'>",
+            "DataSetTrailingPadding": "<class 'bytes'>",
+            "Item": "<class 'str'>",
+            "ItemDelimitationItem": "<class 'str'>",
+            "SequenceDelimitationItem": "<class 'str'>"
+        },
+        "dicomVersion": "3.0.1"
+    }
+
+**Explanation of Response Fields**
+  - ``requiredFieldTypes``: A dictionary where keys represent DICOM field names and values represent their expected Python data types.
+  - ``dicomVersion``: The version of the DICOM standard used by the system.
+
 ---------------
 Authentication
 ---------------
@@ -255,8 +399,11 @@ Response:
       "key": "API_KEY_12345"
     }
 
---------------------------------------
-DICOM File Upload and Image Retrieval
+---------------------------
+Endpoints for DICOM support
+---------------------------
+
+1. DICOM File Upload and Image Retrieval
 --------------------------------------
 
 To upload a DICOM file for processing and retrieve image data, you need to send a `POST` request to the `/api/dicom/read/file/` endpoint. The request should include the following:
@@ -364,6 +511,68 @@ Explanation of Response Fields:
 - **ImageFormat**: The format of the image returned (e.g., PNG).
 - **Images**: A list of base64-encoded image data for each image.
 
+2. DICOM File Generation and Download
+----------------------------------
+
+This endpoint allows generating a DICOM file from provided metadata and an image file.
+
+**Endpoint**
+  - **URL**: ``/api/dicom/generate/``
+  - **Method**: ``POST``
+  - **Description**: Allows users to upload an image and provide necessary DICOM metadata to generate a valid DICOM file.
+
+**Request**
+  - **Headers**:
+    - ``Authorization``: ``ApiKey your_api_key_here``
+    - ``Content-Type``: ``multipart/form-data``
+  - **Body Parameters**:
+    - ``file_name`` *(required)*: The name of the generated DICOM file (without extension).
+    - ``image`` *(required)*: The image file to be embedded in the DICOM file. Supported formats: ``png``, ``jpeg``.
+    - ``Additional DICOM metadata fields`` *(optional)*: Key-value pairs of metadata fields to be included in the DICOM file.
+
+Example Request:
+~~~~~~~~~~~~~~~~
+
+.. code-block:: http
+
+    POST /api/dicom/generate/ HTTP/1.1
+    Host: localhost:8080
+    Authorization: ApiKey amRqSgZZ...
+    Content-Type: multipart/form-data; boundary=boundary
+
+    --boundary
+    Content-Disposition: form-data; name="file_name"
+
+    example_dicom
+    --boundary
+    Content-Disposition: form-data; name="image"; filename="image.png"
+    Content-Type: image/png
+
+    <binary image file content>
+
+    --boundary
+    Content-Disposition: form-data; name="PatientName"
+
+    John Doe
+    --boundary
+    Content-Disposition: form-data; name="Modality"
+
+    CT
+    --boundary--
+
+Response
+~~~~~~~~
+If the request is successful, the server will return a downloadable DICOM file.
+
+**Example Response Headers**:
+
+.. code-block:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/dicom
+    Content-Disposition: attachment; filename="example_dicom.dcm"
+
+The response body will contain the binary content of the generated DICOM file.
 
 ----------------
 API Usage Limits
