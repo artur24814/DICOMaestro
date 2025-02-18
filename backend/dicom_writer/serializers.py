@@ -10,13 +10,21 @@ class DicomFileContentUploadSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         dicom_fields = kwargs.pop("dicom_fields", [])
         required_dicom_field_serializer_types = get_dicom_field_to_serializer_field()
-        self.dicom_filed_names = list()
+        self.dicom_field_serializators = dict()
         super().__init__(*args, **kwargs)
 
         for dicom_field in dicom_fields:
             if dicom_field in list(required_dicom_field_serializer_types.keys()):
-                self.fields[dicom_field] = required_dicom_field_serializer_types[dicom_field]
-                self.dicom_filed_names.append(dicom_field)
+                serializing_field = required_dicom_field_serializer_types[dicom_field]
+                self.dicom_field_serializators[dicom_field] = (serializing_field, kwargs['data'].pop(dicom_field))
+
+    def validate(self, attrs):
+        for dicom_field, data in self.dicom_field_serializators.items():
+            try:
+                data[0].run_validation(data[1][0])
+            except serializers.ValidationError as e:
+                raise serializers.ValidationError(f'{dicom_field}: {e.detail[0]}')
+        return super().validate(attrs)
 
     def validate_image(self, value: UploadedFile):
         if value.size > 5 * 1024 * 1024:  # 5MB limit

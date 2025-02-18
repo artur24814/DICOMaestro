@@ -23,8 +23,8 @@ class DicomFileDataSetUploadAPIView(views.APIView):
             dicom_file = dicom_file_factory.generate_dicom_file(
                 file_name=f"{file_name}.dcm",
                 meta_data={
-                    dicom_field: serializer.validated_data[dicom_field] 
-                    for dicom_field in serializer.dicom_filed_names
+                    dicom_field: data[1]
+                    for dicom_field, data in serializer.dicom_field_serializators.items()
                 },
                 image_path=image_bytes
             )
