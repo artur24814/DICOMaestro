@@ -15,7 +15,7 @@ BASE_READ_URL = reverse('dicom_reader:read-dicom-file')
 
 @pytest.mark.django_db
 @assert_num_queries(0)
-def test_send_content_and_response_image(api_client, mock_image, base_app_user):
+def test_write_dicom_by_forbidden_unauthorised_user(api_client, mock_image):
     image_file = SimpleUploadedFile("test_image.png", mock_image.read(), content_type="image/png")
 
     data = {
@@ -25,6 +25,25 @@ def test_send_content_and_response_image(api_client, mock_image, base_app_user):
 
     response = api_client.post(BASE_URL, data, format="multipart")
 
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.data['detail'] == 'Authentication credentials were not provided.'
+
+
+@pytest.mark.django_db
+@assert_num_queries(3)
+def test_send_content_and_response_image(api_client, mock_image, base_app_user):
+    access_key = get_access_key(api_client, BASE_USER_DATA)
+    headers = {"Authorization": f"Bearer {access_key}"}
+
+    image_file = SimpleUploadedFile("test_image.png", mock_image.read(), content_type="image/png")
+
+    data = {
+        "file_name": "Example Title",
+        "image": image_file,
+    }
+
+    response = api_client.post(BASE_URL, data, format="multipart", headers=headers)
+
     assert response.status_code == status.HTTP_200_OK
     content_disposition = response.headers.get("Content-Disposition", "")
     assert "attachment; filename=" in content_disposition
@@ -33,8 +52,11 @@ def test_send_content_and_response_image(api_client, mock_image, base_app_user):
 
 
 @pytest.mark.django_db
-@assert_num_queries(3)
+@assert_num_queries(5)
 def test_send_content_and_read_file_after_response(api_client, mock_image, base_app_user):
+    access_key = get_access_key(api_client, BASE_USER_DATA)
+    headers = {"Authorization": f"Bearer {access_key}"}
+
     image_file = SimpleUploadedFile("test_image.png", mock_image.read(), content_type="image/png")
 
     data = {
@@ -46,13 +68,11 @@ def test_send_content_and_read_file_after_response(api_client, mock_image, base_
         "Modality": "XA"
     }
 
-    response = api_client.post(BASE_URL, data, format="multipart")
+    response = api_client.post(BASE_URL, data, format="multipart", headers=headers)
 
     assert response.status_code == status.HTTP_200_OK
 
     # open file and read it -----------------------------------------
-    access_key = get_access_key(api_client, BASE_USER_DATA)
-    headers = {"Authorization": f"Bearer {access_key}"}
 
     dicom_bytes = BytesIO(response.content)
     dicom_file = SimpleUploadedFile("output.dcm", dicom_bytes.getvalue(), content_type="application/dicom")
@@ -76,8 +96,10 @@ def test_send_content_and_read_file_after_response(api_client, mock_image, base_
 
 
 @pytest.mark.django_db
-@assert_num_queries(0)
+@assert_num_queries(3)
 def test_send_content_with_unvalid_fileds_data_types_str_instead_of_float(api_client, mock_image, base_app_user):
+    access_key = get_access_key(api_client, BASE_USER_DATA)
+    headers = {"Authorization": f"Bearer {access_key}"}
     image_file = SimpleUploadedFile("test_image.png", mock_image.read(), content_type="image/png")
 
     data = {
@@ -89,15 +111,18 @@ def test_send_content_with_unvalid_fileds_data_types_str_instead_of_float(api_cl
         "Modality": "XA"
     }
 
-    response = api_client.post(BASE_URL, data, format="multipart")
+    response = api_client.post(BASE_URL, data, format="multipart", headers=headers)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data['non_field_errors'][0] == 'PatientSize: A valid number is required.'
 
 
 @pytest.mark.django_db
-@assert_num_queries(0)
+@assert_num_queries(3)
 def test_send_content_with_unvalid_fileds_data_types_str_instead_of_bytes(api_client, mock_image, base_app_user):
+    access_key = get_access_key(api_client, BASE_USER_DATA)
+    headers = {"Authorization": f"Bearer {access_key}"}
+
     image_file = SimpleUploadedFile("test_image.png", mock_image.read(), content_type="image/png")
 
     data = {
@@ -109,7 +134,7 @@ def test_send_content_with_unvalid_fileds_data_types_str_instead_of_bytes(api_cl
         "Modality": "XA"
     }
 
-    response = api_client.post(BASE_URL, data, format="multipart")
+    response = api_client.post(BASE_URL, data, format="multipart", headers=headers)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert response.data['non_field_errors'][0] == 'CoordinateSystemAxisValues: The submitted data was not a file. '\

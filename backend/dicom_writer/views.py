@@ -2,6 +2,7 @@ from io import BytesIO
 
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import views, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.http import HttpResponse
 
@@ -10,6 +11,7 @@ from .dicom_file_factory import CustomeDicomFileFactory
 
 
 class DicomFileDataSetUploadAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
