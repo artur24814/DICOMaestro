@@ -23,31 +23,31 @@ class CustomeDicomFile:
         file_ds.SeriesInstanceUID = generate_uid()
         return file_ds
 
-    def append_rgb_image_into_data_set(self, file_ds: FileDataset, image_path: str) -> FileDataset:
-        with open(image_path, 'rb') as f:
-            image = Image.open(f)
-            image = image.convert("L")
-            image_data = np.array(image, dtype=np.uint8)
+    def append_rgb_image_into_data_set(self, file_ds: FileDataset, image_data: str) -> FileDataset:
+        image_data.seek(0)
+        image = Image.open(image_data)
+        image = image.convert("L")
+        image_data = np.array(image, dtype=np.uint8)
 
-            if len(image_data.shape) == 2:  # Grayscale
-                file_ds.Rows, file_ds.Columns = image_data.shape
-                file_ds.SamplesPerPixel = 1
-            elif len(image_data.shape) == 3:  # RGB or RGBA
-                file_ds.Rows, file_ds.Columns, _ = image_data.shape
-                file_ds.SamplesPerPixel = 3
-            else:
-                raise ValueError(f"Unsupported image format: {image_data.shape}")
+        if len(image_data.shape) == 2:  # Grayscale
+            file_ds.Rows, file_ds.Columns = image_data.shape
+            file_ds.SamplesPerPixel = 1
+        elif len(image_data.shape) == 3:  # RGB or RGBA
+            file_ds.Rows, file_ds.Columns, _ = image_data.shape
+            file_ds.SamplesPerPixel = 3
+        else:
+            raise ValueError(f"Unsupported image format: {image_data.shape}")
 
-            file_ds.BitsAllocated = 8
-            file_ds.BitsStored = 8
-            file_ds.HighBit = 7
-            file_ds.PixelData = image_data.tobytes()
-            file_ds.PhotometricInterpretation = "MONOCHROME2" if file_ds.SamplesPerPixel == 1 else "RGB"
-            file_ds.PixelRepresentation = 0
-            file_ds.RescaleSlope = 1.0
-            file_ds.RescaleIntercept = 0.0
+        file_ds.BitsAllocated = 8
+        file_ds.BitsStored = 8
+        file_ds.HighBit = 7
+        file_ds.PixelData = image_data.tobytes()
+        file_ds.PhotometricInterpretation = "MONOCHROME2" if file_ds.SamplesPerPixel == 1 else "RGB"
+        file_ds.PixelRepresentation = 0
+        file_ds.RescaleSlope = 1.0
+        file_ds.RescaleIntercept = 0.0
 
-            return file_ds
+        return file_ds
 
     @property
     def ds(self) -> FileDataset:

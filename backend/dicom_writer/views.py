@@ -1,9 +1,12 @@
+from io import BytesIO
+
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import views, status
 from rest_framework.response import Response
-from django.core.files.base import ContentFile
+from django.http import HttpResponse
 
 from .serializers import DicomFileContentUploadSerializer
+from .dicom_file_factory import CustomeDicomFileFactory
 
 
 class DicomFileDataSetUploadAPIView(views.APIView):
@@ -11,15 +14,22 @@ class DicomFileDataSetUploadAPIView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = DicomFileContentUploadSerializer(data=request.data, dicom_fields=list(request.data.keys()))
+
         if serializer.is_valid():
             uploaded_image = request.FILES.get("image")
-            response_file = ContentFile(uploaded_image.read(), name=uploaded_image.name)
-
-            response = Response(status=status.HTTP_201_CREATED)
-            response["Content-Disposition"] = f'attachment; filename="{uploaded_image.name}"'
-            response["Content-Type"] = uploaded_image.content_type
-            response.content = response_file.read()
-
+            file_name = serializer.validated_data.get('file_name')
+            image_bytes = BytesIO(uploaded_image.read())
+            dicom_file_factory = CustomeDicomFileFactory()
+            dicom_file = dicom_file_factory.generate_dicom_file(
+                file_name=f"{file_name}.dcm",
+                meta_data={
+                    dicom_field: serializer.validated_data[dicom_field] 
+                    for dicom_field in serializer.dicom_filed_names
+                },
+                image_path=image_bytes
+            )
+            response = HttpResponse(dicom_file.file.getvalue(), content_type="application/dicom")
+            response["Content-Disposition"] = f'attachment; filename="{file_name}.dcm"'
             return response
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
