@@ -26,7 +26,7 @@ class CustomTokenRefreshView(TokenRefreshView):
     authentication_classes = [CookieOrRequestDataJWTAuthentication]
 
     def post(self, request, *args, **kwargs):
-        access_token = request.auth
+        access_token = request.auth.access_token
         return Response({
             'access': str(access_token),
         })

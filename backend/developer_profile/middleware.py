@@ -10,6 +10,7 @@ class APIRateLimitMiddleware:
         self.get_response = get_response
         self.endpoint_limits = {
             'read-dicom-file': 1000,
+            'upload-content-for-dicom-image': 1000,
         }
 
     def __call__(self, request):

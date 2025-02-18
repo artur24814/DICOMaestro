@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .utils import get_allowed_dicom_fields, get_dicom_version
+from .utils import get_allowed_dicom_fields, get_dicom_version, get_dicom_field_to_python_types
 from .serializers import DicomAllowedFieldsFilterQueryParamsSerializer
 
 
@@ -22,6 +22,16 @@ class DicomAllowedFieldsAPIViews(APIView):
 
         data = {
             "allowedFields": allowed_dicom_fields,
+            "dicomVersion": get_dicom_version()
+        }
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class DicomRequiredFileldTypeAPIView(APIView):
+    def get(self, request):
+        required_field_types = get_dicom_field_to_python_types()
+        data = {
+            "requiredFieldTypes": required_field_types,
             "dicomVersion": get_dicom_version()
         }
         return Response(data, status=status.HTTP_200_OK)

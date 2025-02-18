@@ -10,6 +10,7 @@ from developer_profile.models import DeveloperActivityLog
 
 
 BASE_URL = reverse('dicom_reader:read-dicom-file')
+BASE_WRITE_DICOM_URL = reverse('dicom_writer:upload-content-for-dicom-image')
 
 
 @pytest.mark.django_db
@@ -19,6 +20,28 @@ def test_request_below_limit(mocker, api_request_factory_with_logged_in_develope
     middleware = APIRateLimitMiddleware(mock_get_response)
 
     request = api_request_factory_with_logged_in_developer(BASE_URL)
+
+    response = middleware(request)
+
+    assert response.status_code == 200
+    assert response.content == b'{"success": "ok"}'
+
+    current_month_logs = DeveloperActivityLog.objects.filter(
+        developer=developer_profile.user,
+        timestamp__month=now().month,
+        timestamp__year=now().year
+    )
+
+    assert current_month_logs.count() == 1
+
+
+@pytest.mark.django_db
+def test_create_dicom_request_below_limit(mocker, api_request_factory_with_logged_in_developer, developer_profile):
+    """Test API request when under the limit."""
+    mock_get_response = mocker.Mock(return_value=JsonResponse({"success": "ok"}))
+    middleware = APIRateLimitMiddleware(mock_get_response)
+
+    request = api_request_factory_with_logged_in_developer(BASE_WRITE_DICOM_URL)
 
     response = middleware(request)
 
